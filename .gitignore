@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Playwright outputs
+test-results/
+playwright-report/
+
+# TypeScript build output
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+
+# IDE
+.vscode/
+.idea/
