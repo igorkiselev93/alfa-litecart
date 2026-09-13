@@ -32,5 +32,54 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
       expect(salePrice).toBeGreaterThan(0);
     });
 
+    // Step 3: Set quantity and add to cart
+    await allure.step(`Шаг 3: Установить количество ${QUANTITY} и добавить в корзину`, async () => {
+      await productPage.selectSizeIfPresent();
+      await productPage.setQuantity(QUANTITY);
+      await productPage.addToCart();
+      const cartCount = await productPage.header.getCartItemCount();
+      expect(cartCount).toBe(QUANTITY);
+    });
+
+    // Step 4: Go to cart and verify discounted total
+    await allure.step('Шаг 4: Перейти в корзину и проверить итог по скидочной цене', async () => {
+      await cartPage.goto();
+      const paymentDue = await cartPage.getPaymentDueValue();
+      const expectedTotal = salePrice * QUANTITY;
+      const paymentText = await cartPage.getPaymentDueText();
+      // RegEx: must be dollar amount
+      expect(paymentText).toMatch(/\$\d+(\.\d{2})?/);
+      expect(paymentDue).toBe(expectedTotal);
+    });
+
+    // Step 5: Confirm order
+    await allure.step('Шаг 5: Подтвердить заказ', async () => {
+      await cartPage.confirmOrder();
+      expect(await cartPage.isOrderConfirmed()).toBe(true);
+      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', { ignoreCase: true });
+    });
+
+    // Step 6: Open printable receipt and verify order details
+    await allure.step('Шаг 6: Открыть чек и проверить корректность заказа (скидочная цена)', async () => {
+      const receipt = await cartPage.openOrderReceipt();
+
+      // Order number must be present
+      const orderNum = await receipt.getOrderNumber();
+      expect(orderNum).toMatch(/order\s*#\d+/i);
+
+      // Verify line item uses sale price
+      const items = await receipt.getOrderItems();
+      expect(items).toHaveLength(1);
+      expect(items[0].item).toContain(PRODUCT_NAME);
+      expect(items[0].qty).toBe(QUANTITY);
+      expect(items[0].unitPrice).toBe(salePrice);
+      // Sum = qty × sale price
+      expect(items[0].sum).toBe(salePrice * QUANTITY);
+
+      // Grand Total via RegEx and value check
+      const grandTotalText = await receipt.getGrandTotalText();
+      expect(grandTotalText).toMatch(/\$\d+\.\d{2}/);
+      expect(await receipt.getGrandTotalValue()).toBe(salePrice * QUANTITY);
+    });
   });
 });
