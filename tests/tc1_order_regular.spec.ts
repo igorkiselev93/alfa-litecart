@@ -16,11 +16,16 @@ test.describe('TC-1: Заказ одного товара без скидки (�
     await allure.story('Authorized user orders regular product');
 
     // Step 1: Register new user, verify login, and assert cart is empty (precondition)
-    await allure.step('Шаг 1: Зарегистрировать нового пользователя, проверить авторизацию и пустую корзину', async () => {
-      await expect(authedRegisteredPage.page.locator('#box-account a[href*="logout"]')).toBeVisible();
-      // Precondition: cart must be empty — assertion belongs in the test, not in the Page Object
-      expect(await cartPage.getHeaderCartItemCount()).toBe(0);
-    });
+    await allure.step(
+      'Шаг 1: Зарегистрировать нового пользователя, проверить авторизацию и пустую корзину',
+      async () => {
+        await expect(
+          authedRegisteredPage.page.locator('#box-account a[href*="logout"]'),
+        ).toBeVisible();
+        // Precondition: cart must be empty — assertion belongs in the test, not in the Page Object
+        expect(await cartPage.getHeaderCartItemCount()).toBe(0);
+      },
+    );
 
     // Step 2: Navigate to product and get price
     let unitPrice = 0;
@@ -56,7 +61,9 @@ test.describe('TC-1: Заказ одного товара без скидки (�
     await allure.step('Шаг 5: Подтвердить заказ', async () => {
       await cartPage.confirmOrder();
       expect(await cartPage.isOrderConfirmed()).toBe(true);
-      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', { ignoreCase: true });
+      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', {
+        ignoreCase: true,
+      });
     });
 
     // Step 6: Open printable receipt and verify order details

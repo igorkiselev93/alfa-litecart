@@ -16,11 +16,16 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
     await allure.story('Authorized user orders sale product');
 
     // Step 1: Register new user, verify login, and assert cart is empty (precondition)
-    await allure.step('Шаг 1: Зарегистрировать нового пользователя, проверить авторизацию и пустую корзину', async () => {
-      await expect(authedRegisteredPage.page.locator('#box-account a[href*="logout"]')).toBeVisible();
-      // Precondition: cart must be empty — assertion belongs in the test, not in the Page Object
-      expect(await cartPage.getHeaderCartItemCount()).toBe(0);
-    });
+    await allure.step(
+      'Шаг 1: Зарегистрировать нового пользователя, проверить авторизацию и пустую корзину',
+      async () => {
+        await expect(
+          authedRegisteredPage.page.locator('#box-account a[href*="logout"]'),
+        ).toBeVisible();
+        // Precondition: cart must be empty — assertion belongs in the test, not in the Page Object
+        expect(await cartPage.getHeaderCartItemCount()).toBe(0);
+      },
+    );
 
     // Step 2: Navigate to sale product
     let salePrice = 0;
@@ -56,30 +61,35 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
     await allure.step('Шаг 5: Подтвердить заказ', async () => {
       await cartPage.confirmOrder();
       expect(await cartPage.isOrderConfirmed()).toBe(true);
-      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', { ignoreCase: true });
+      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', {
+        ignoreCase: true,
+      });
     });
 
     // Step 6: Open printable receipt and verify order details
-    await allure.step('Шаг 6: Открыть чек и проверить корректность заказа (скидочная цена)', async () => {
-      const receipt = await cartPage.openOrderReceipt();
+    await allure.step(
+      'Шаг 6: Открыть чек и проверить корректность заказа (скидочная цена)',
+      async () => {
+        const receipt = await cartPage.openOrderReceipt();
 
-      // Order number must be present
-      const orderNum = await receipt.getOrderNumber();
-      expect(orderNum).toMatch(/order\s*#\d+/i);
+        // Order number must be present
+        const orderNum = await receipt.getOrderNumber();
+        expect(orderNum).toMatch(/order\s*#\d+/i);
 
-      // Verify line item uses sale price
-      const items = await receipt.getOrderItems();
-      expect(items).toHaveLength(1);
-      expect(items[0].item).toContain(PRODUCT_NAME);
-      expect(items[0].qty).toBe(QUANTITY);
-      expect(items[0].unitPrice).toBe(salePrice);
-      // Sum = qty × sale price
-      expect(items[0].sum).toBe(salePrice * QUANTITY);
+        // Verify line item uses sale price
+        const items = await receipt.getOrderItems();
+        expect(items).toHaveLength(1);
+        expect(items[0].item).toContain(PRODUCT_NAME);
+        expect(items[0].qty).toBe(QUANTITY);
+        expect(items[0].unitPrice).toBe(salePrice);
+        // Sum = qty × sale price
+        expect(items[0].sum).toBe(salePrice * QUANTITY);
 
-      // Grand Total via RegEx and value check
-      const grandTotalText = await receipt.getGrandTotalText();
-      expect(grandTotalText).toMatch(/\$\d+\.\d{2}/);
-      expect(await receipt.getGrandTotalValue()).toBe(salePrice * QUANTITY);
-    });
+        // Grand Total via RegEx and value check
+        const grandTotalText = await receipt.getGrandTotalText();
+        expect(grandTotalText).toMatch(/\$\d+\.\d{2}/);
+        expect(await receipt.getGrandTotalValue()).toBe(salePrice * QUANTITY);
+      },
+    );
   });
 });

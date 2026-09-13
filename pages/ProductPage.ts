@@ -20,7 +20,9 @@ export class ProductPage extends BasePage {
     this.regularPrice = page.locator('#box-product .price-wrapper');
     this.salePrice = page.locator('#box-product .price-wrapper strong');
     // XPath: original strikethrough price, scoped to product box
-    this.originalPriceStrikethrough = page.locator('xpath=//div[@id="box-product"]//div[contains(@class,"price-wrapper")]//s');
+    this.originalPriceStrikethrough = page.locator(
+      'xpath=//div[@id="box-product"]//div[contains(@class,"price-wrapper")]//s',
+    );
     this.quantityInput = page.locator('input[name="quantity"]');
     this.addToCartButton = page.locator('button[name="add_cart_product"]');
     // Size option select (some products require it)
@@ -83,7 +85,7 @@ export class ProductPage extends BasePage {
         return m ? parseInt(m[1], 10) > prevCount : false;
       },
       countBefore,
-      { timeout: 15_000 }
+      { timeout: 15_000 },
     );
   }
 }

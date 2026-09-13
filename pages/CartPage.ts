@@ -72,7 +72,7 @@ export class CartPage extends BasePage {
   /** Check if a product name appears in the order summary table */
   getOrderSummaryRow(productName: string): Locator {
     return this.page.locator(
-      `xpath=//table[.//th[text()="Product"]]//td[contains(text(),"${productName}")]`
+      `xpath=//table[.//th[text()="Product"]]//td[contains(text(),"${productName}")]`,
     );
   }
 

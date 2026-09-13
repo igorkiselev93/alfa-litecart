@@ -55,15 +55,18 @@ test.describe('TC-3: Заказ товара без авторизации (го
     });
 
     // Step 5: Return to home and check Recently Viewed
-    await allure.step('Шаг 5: Вернуться на главную и проверить блок "Recently Viewed"', async () => {
-      await homePage.goto();
-      // Recently Viewed should show the products we visited
-      const recentCount = await homePage.getRecentlyViewedCount();
-      expect(recentCount).toBeGreaterThan(0);
-      // At least one of our products must appear
-      const product1InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_1_NAME);
-      const product2InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_2_NAME);
-      expect(product1InRecent || product2InRecent).toBe(true);
-    });
+    await allure.step(
+      'Шаг 5: Вернуться на главную и проверить блок "Recently Viewed"',
+      async () => {
+        await homePage.goto();
+        // Recently Viewed should show the products we visited
+        const recentCount = await homePage.getRecentlyViewedCount();
+        expect(recentCount).toBeGreaterThan(0);
+        // At least one of our products must appear
+        const product1InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_1_NAME);
+        const product2InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_2_NAME);
+        expect(product1InRecent || product2InRecent).toBe(true);
+      },
+    );
   });
 });

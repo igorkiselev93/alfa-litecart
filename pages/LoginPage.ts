@@ -13,7 +13,9 @@ export class LoginPage extends BasePage {
     this.passwordInput = page.locator('input[name="password"]');
     this.loginButton = page.locator('button[name="login"]');
     // XPath: error notice div with class "notice errors"
-    this.errorNotice = page.locator('xpath=//div[contains(@class,"notice") and contains(@class,"errors")]');
+    this.errorNotice = page.locator(
+      'xpath=//div[contains(@class,"notice") and contains(@class,"errors")]',
+    );
   }
 
   async goto(): Promise<void> {

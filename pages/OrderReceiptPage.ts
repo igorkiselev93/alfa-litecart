@@ -10,9 +10,13 @@ export class OrderReceiptPage extends BasePage {
     super(page);
     // "Order #714" text node
     // XPath: order number div inside header table (e.g. 'Order #714')
-    this.orderNumberText = page.locator('xpath=//header//td[last()]//div[contains(text(),"Order #")]');
+    this.orderNumberText = page.locator(
+      'xpath=//header//td[last()]//div[contains(text(),"Order #")]',
+    );
     // Grand Total strong inside the totals table
-    this.grandTotal = page.locator('xpath=//td[.//strong[text()="Grand Total"]]/following-sibling::td//strong');
+    this.grandTotal = page.locator(
+      'xpath=//td[.//strong[text()="Grand Total"]]/following-sibling::td//strong',
+    );
     // Data rows in the items table (skip header row)
     this.orderItemRows = page.locator('xpath=//table[.//th[text()="Item"]]//tr[not(.//th)]');
   }
@@ -38,7 +42,9 @@ export class OrderReceiptPage extends BasePage {
   }
 
   /** Returns all item rows as parsed objects */
-  async getOrderItems(): Promise<Array<{ qty: number; item: string; sku: string; unitPrice: number; sum: number }>> {
+  async getOrderItems(): Promise<
+    Array<{ qty: number; item: string; sku: string; unitPrice: number; sum: number }>
+  > {
     const count = await this.orderItemRows.count();
     const items = [];
     for (let i = 0; i < count; i++) {
@@ -54,4 +60,3 @@ export class OrderReceiptPage extends BasePage {
     return items;
   }
 }
-
