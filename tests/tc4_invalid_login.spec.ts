@@ -13,7 +13,7 @@ test.describe('TC-4: Невалидный логин (негативный сц�
     // Step 1: Navigate to login page
     await allure.step('Шаг 1: Открыть страницу входа', async () => {
       await loginPage.goto();
-      await expect(loginPage.page).toHaveTitle(/Login/i);
+      expect(await loginPage.getTitle()).toMatch(/Login/i);
     });
 
     // Step 2: Enter valid email + wrong password
@@ -40,7 +40,7 @@ test.describe('TC-4: Невалидный логин (негативный сц�
 
     // Step 6: Confirm user is NOT logged in
     await allure.step('Шаг 6: Убедиться, что пользователь не авторизован', async () => {
-      await expect(loginPage.page.locator('#box-account a[href*="logout"]')).toBeHidden();
+      await expect(loginPage.isLoggedIn()).toBeHidden();
     });
   });
 });

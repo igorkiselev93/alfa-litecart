@@ -29,9 +29,4 @@ export class LoginPage extends BasePage {
   async getErrorText(): Promise<string> {
     return (await this.errorNotice.textContent()) ?? '';
   }
-
-  isLoggedIn(): Locator {
-    // Sidebar shows "Logout" link when authenticated
-    return this.page.locator('#box-account a[href*="logout"]');
-  }
 }

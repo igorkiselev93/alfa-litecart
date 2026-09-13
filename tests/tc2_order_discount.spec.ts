@@ -19,9 +19,7 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
     await allure.step(
       'Шаг 1: Зарегистрировать нового пользователя, проверить авторизацию и пустую корзину',
       async () => {
-        await expect(
-          authedRegisteredPage.page.locator('#box-account a[href*="logout"]'),
-        ).toBeVisible();
+        await expect(authedRegisteredPage.isLoggedIn()).toBeVisible();
         // Precondition: cart must be empty — assertion belongs in the test, not in the Page Object
         expect(await cartPage.getHeaderCartItemCount()).toBe(0);
       },
@@ -61,7 +59,7 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
     await allure.step('Шаг 5: Подтвердить заказ', async () => {
       await cartPage.confirmOrder();
       expect(await cartPage.isOrderConfirmed()).toBe(true);
-      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', {
+      await expect(cartPage.orderSuccessNotice).toContainText('successfully completed', {
         ignoreCase: true,
       });
     });
