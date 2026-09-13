@@ -31,4 +31,3 @@ export class HeaderComponent {
     await this.checkoutLink.click();
   }
 }
-

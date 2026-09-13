@@ -8,8 +8,12 @@ export class OrderReceiptPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
+    // "Order #714" text node
+    // XPath: order number div inside header table (e.g. 'Order #714')
     this.orderNumberText = page.locator('xpath=//header//td[last()]//div[contains(text(),"Order #")]');
+    // Grand Total strong inside the totals table
     this.grandTotal = page.locator('xpath=//td[.//strong[text()="Grand Total"]]/following-sibling::td//strong');
+    // Data rows in the items table (skip header row)
     this.orderItemRows = page.locator('xpath=//table[.//th[text()="Item"]]//tr[not(.//th)]');
   }
 

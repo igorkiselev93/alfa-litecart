@@ -8,6 +8,7 @@ export class CartPage extends BasePage {
   readonly paymentDueRow: Locator;
   readonly orderSuccessNotice: Locator;
   readonly customerFirstNameInput: Locator;
+  /** Cart item count readable from any page via header */
   readonly headerCartCount: Locator;
 
   constructor(page: Page) {
@@ -75,16 +76,23 @@ export class CartPage extends BasePage {
     );
   }
 
+  /** Check guest checkout: first name field should be empty */
   async isGuestCheckout(): Promise<boolean> {
     const value = await this.customerFirstNameInput.inputValue();
     return value.trim() === '';
   }
 
+  /** Extracts the printable order copy URL from the order_success page */
   async getPrintableOrderUrl(): Promise<string> {
     const link = this.page.locator('a[href*="printable_order_copy"]');
     return (await link.getAttribute('href')) ?? '';
   }
 
+  /**
+   * Navigates directly to the printable order copy URL.
+   * The link uses Fancybox (class="fancybox") — clicking it opens a modal overlay,
+   * not a real browser navigation. We extract the href and navigate directly instead.
+   */
   async openOrderReceipt(): Promise<OrderReceiptPage> {
     const url = await this.getPrintableOrderUrl();
     await this.page.goto(url);
