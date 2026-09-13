@@ -1,10 +1,12 @@
 import { Page, Locator } from '@playwright/test';
+import { BaseComponent } from './BaseComponent';
 
-export class HeaderComponent {
-  readonly cartLink: Locator;
+export class HeaderComponent extends BaseComponent {
+  private readonly cartLink: Locator;
 
-  constructor(private readonly page: Page) {
-    this.cartLink = page.locator('#cart a.content');
+  constructor(page: Page) {
+    super(page, page.locator('#header'));
+    this.cartLink = this.root.locator('#cart a.content');
   }
 
   async getCartText(): Promise<string> {
