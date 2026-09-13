@@ -9,7 +9,6 @@ const PRODUCT_2_NAME = 'Blue Duck';
 
 test.describe('TC-3: Заказ товара без авторизации (гость)', () => {
   test('должен добавить 2 разных товара, проверить корзину, поля гостя и блок "Recently Viewed"', async ({
-    page,
     productPage,
     cartPage,
     homePage,

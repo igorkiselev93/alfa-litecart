@@ -40,7 +40,7 @@ test.describe('TC-4: Невалидный логин (негативный сц�
   
       // Step 6: Confirm user is NOT logged in
       await allure.step('Шаг 6: Убедиться, что пользователь не авторизован', async () => {
-        await expect(loginPage.page.locator('#box-account a[href*="logout"]')).not.toBeVisible();
+        await expect(loginPage.page.locator('#box-account a[href*="logout"]')).toBeHidden();
       });
   });
 });
