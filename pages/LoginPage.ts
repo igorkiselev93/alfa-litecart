@@ -2,11 +2,9 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
-  // CSS selectors
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
-  // XPath selector (project requirement)
   readonly errorNotice: Locator;
 
   constructor(page: Page) {

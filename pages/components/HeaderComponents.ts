@@ -1,15 +1,11 @@
 import { Page, Locator } from '@playwright/test';
 
 export class HeaderComponent {
-  // CSS selector
   readonly cartLink: Locator;
-  // XPath selector (project requirement)
   readonly checkoutLink: Locator;
 
   constructor(private readonly page: Page) {
-    // CSS
     this.cartLink = page.locator('#cart a.content');
-    // XPath
     this.checkoutLink = page.locator('xpath=//header//a[contains(@href, "checkout")]').first();
   }
 
