@@ -58,5 +58,28 @@ test.describe('TC-1: Заказ одного товара без скидки (�
       expect(await cartPage.isOrderConfirmed()).toBe(true);
       await expect(cartPage.page.locator('h1')).toContainText('successfully completed', { ignoreCase: true });
     });
+
+    // Step 6: Open printable receipt and verify order details
+    await allure.step('Шаг 6: Открыть чек и проверить корректность заказа', async () => {
+      const receipt = await cartPage.openOrderReceipt();
+
+      // Order number must be present
+      const orderNum = await receipt.getOrderNumber();
+      expect(orderNum).toMatch(/order\s*#\d+/i);
+
+      // Verify line item
+      const items = await receipt.getOrderItems();
+      expect(items).toHaveLength(1);
+      expect(items[0].item).toContain(PRODUCT_NAME);
+      expect(items[0].qty).toBe(QUANTITY);
+      expect(items[0].unitPrice).toBe(unitPrice);
+      // Sum = qty × unit price
+      expect(items[0].sum).toBe(unitPrice * QUANTITY);
+
+      // Grand Total via RegEx pattern and value check
+      const grandTotalText = await receipt.getGrandTotalText();
+      expect(grandTotalText).toMatch(/\$\d+\.\d{2}/);
+      expect(await receipt.getGrandTotalValue()).toBe(unitPrice * QUANTITY);
+    });
   });
 });
