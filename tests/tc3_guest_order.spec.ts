@@ -36,6 +36,35 @@ test.describe('TC-3: Заказ товара без авторизации (го
       await productPage.addToCart();
     });
 
-    
+    // Step 3: Go to cart and validate both products present
+    await allure.step('Шаг 3: Проверить оба товара в корзине и итоговую стоимость', async () => {
+      await cartPage.goto();
+      // Both products in order summary
+      await expect(cartPage.getOrderSummaryRow(PRODUCT_1_NAME)).toBeVisible();
+      await expect(cartPage.getOrderSummaryRow(PRODUCT_2_NAME)).toBeVisible();
+      // Total should be $40 (2 × $20)
+      const total = await cartPage.getPaymentDueValue();
+      const totalText = await cartPage.getPaymentDueText();
+      expect(totalText).toMatch(/\$\d+(\.\d{2})?/);
+      expect(total).toBe(40);
+    });
+
+    // Step 4: Check guest customer fields are empty
+    await allure.step('Шаг 4: Проверить, что поля покупателя пусты (гостевой режим)', async () => {
+      const isGuest = await cartPage.isGuestCheckout();
+      expect(isGuest).toBe(true);
+    });
+
+    // Step 5: Return to home and check Recently Viewed
+    await allure.step('Шаг 5: Вернуться на главную и проверить блок "Recently Viewed"', async () => {
+      await homePage.goto();
+      // Recently Viewed should show the products we visited
+      const recentCount = await homePage.getRecentlyViewedCount();
+      expect(recentCount).toBeGreaterThan(0);
+      // At least one of our products must appear
+      const product1InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_1_NAME);
+      const product2InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_2_NAME);
+      expect(product1InRecent || product2InRecent).toBe(true);
+    });
   });
 });
