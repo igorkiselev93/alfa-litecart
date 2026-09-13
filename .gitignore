@@ -4,6 +4,8 @@ node_modules/
 # Playwright outputs
 test-results/
 playwright-report/
+allure-results/
+allure-report/
 
 # TypeScript build output
 dist/
