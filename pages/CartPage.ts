@@ -5,22 +5,41 @@ export class CartPage extends BasePage {
   readonly cartItems: Locator;
   readonly confirmOrderButton: Locator;
   readonly paymentDueRow: Locator;
+  readonly orderSuccessNotice: Locator;
+  readonly customerFirstNameInput: Locator;
+  readonly headerCartCount: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.cartItems = page.locator('#box-checkout-cart ul.shortcuts li');
+    this.cartItems = page.locator('#box-checkout-cart ul.items li');
     this.confirmOrderButton = page.locator('button[name="confirm_order"]');
-    this.paymentDueRow = page.locator(
-      'xpath=//tr[.//strong[contains(text(),"Payment Due")]]//strong[last()]'
-    );
+    // XPath: payment due amount — scoped to footer row, last td strong
+    this.paymentDueRow = page.locator('xpath=//tr[contains(@class,"footer")]//td[last()]//strong');
+    // Success page heading
+    this.orderSuccessNotice = page.locator('h1');
+    // Guest checkout fields
+    this.customerFirstNameInput = page.locator('input[name="firstname"]');
+    // Header cart link — readable from any page, not just /checkout
+    this.headerCartCount = page.locator('#cart a.content');
   }
 
   async goto(): Promise<void> {
     await super.goto('/en/checkout');
   }
 
+  /** Number of items in cart — only valid on /en/checkout page */
   async getCartItemCount(): Promise<number> {
     return this.cartItems.count();
+  }
+
+  /**
+   * Number of items in cart parsed from the header link.
+   * Works on any page, no navigation required.
+   */
+  async getHeaderCartItemCount(): Promise<number> {
+    const text = (await this.headerCartCount.textContent()) ?? '';
+    const match = text.match(/(\d+)\s+item/);
+    return match ? parseInt(match[1], 10) : 0;
   }
 
   async getPaymentDueText(): Promise<string> {
@@ -40,6 +59,18 @@ export class CartPage extends BasePage {
 
   async confirmOrder(): Promise<void> {
     await this.confirmOrderButton.click();
-    await this.page.waitForURL(/order_confirmation|checkout/, { timeout: 15_000 });
+    // After confirm, LiteCart redirects to /en/order_success
+    await this.page.waitForURL(/order_success/, { timeout: 15_000 });
+  }
+
+  async isOrderConfirmed(): Promise<boolean> {
+    return this.page.url().includes('order_success');
+  }
+
+  /** Check if a product name appears in the order summary table */
+  getOrderSummaryRow(productName: string): Locator {
+    return this.page.locator(
+      `xpath=//table[.//th[text()="Product"]]//td[contains(text(),"${productName}")]`
+    );
   }
 }
