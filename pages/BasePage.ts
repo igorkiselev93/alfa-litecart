@@ -7,6 +7,10 @@ export abstract class BasePage {
     await this.page.goto(path);
   }
 
+  async waitForPageLoad(): Promise<void> {
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
   async getCurrentUrl(): Promise<string> {
     return this.page.url();
   }

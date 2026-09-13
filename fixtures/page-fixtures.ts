@@ -18,7 +18,7 @@ type MyFixtures = {
   createAccountPage: CreateAccountPage;
   /** Dynamically registers a fresh user via Faker and returns credentials */
   registeredUser: UserData;
-  authedRegisteredPage: HomePage;
+  authedPage: HomePage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -37,28 +37,12 @@ export const test = base.extend<MyFixtures>({
   createAccountPage: async ({ page }, use) => {
     await use(new CreateAccountPage(page));
   },
-  authedRegisteredPage: async ({ page }, use) => {
-    const createAccountPage = new CreateAccountPage(page);
-
-    const user: UserData = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      address1: faker.location.streetAddress(),
-      postcode: faker.location.zipCode('#####'),
-      city: faker.location.city(),
-      country: 'United States',
-      zone: 'New York',
-      email: faker.internet.email({ provider: 'testmail.test' }),
-      phone: faker.phone.number({ style: 'international' }),
-      password: `Pass_${faker.string.alphanumeric(8)}1!`,
-    };
-
-    // Register
-    await createAccountPage.goto();
-    await createAccountPage.registerUser(user);
-    // LiteCart auto-logs in after registration
-    await page.waitForSelector('#box-account a[href*="logout"]', { timeout: 15_000 });
-
+  authedPage: async ({ page }, use) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(TEST_EMAIL, TEST_PASSWORD);
+    // Wait for logout link to confirm auth
+    await page.waitForSelector('a[href*="logout"]', { timeout: 10_000 });
     await use(new HomePage(page));
   },
 
