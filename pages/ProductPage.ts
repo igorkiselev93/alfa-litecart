@@ -3,6 +3,9 @@ import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 
 export class ProductPage extends BasePage {
+  // URL is dynamic (per-product path), navigation handled by goto(productPath)
+  protected readonly url = '';
+
   readonly header: HeaderComponent;
   readonly productTitle: Locator;
   readonly regularPrice: Locator;
@@ -29,8 +32,8 @@ export class ProductPage extends BasePage {
     this.sizeSelect = page.locator('select[name="options[Size]"]');
   }
 
-  async goto(productPath: string): Promise<void> {
-    await super.goto(productPath);
+  async gotoProduct(productPath: string): Promise<void> {
+    await this.page.goto(productPath);
   }
 
   async getTitle(): Promise<string> {

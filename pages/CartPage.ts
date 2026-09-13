@@ -3,6 +3,8 @@ import { BasePage } from './BasePage';
 import { OrderReceiptPage } from './OrderReceiptPage';
 
 export class CartPage extends BasePage {
+  protected readonly url = '/en/checkout';
+
   readonly cartItems: Locator;
   readonly confirmOrderButton: Locator;
   readonly paymentDueRow: Locator;
@@ -23,10 +25,6 @@ export class CartPage extends BasePage {
     this.customerFirstNameInput = page.locator('input[name="firstname"]');
     // Header cart link — readable from any page, not just /checkout
     this.headerCartCount = page.locator('#cart a.content');
-  }
-
-  async goto(): Promise<void> {
-    await super.goto('/en/checkout');
   }
 
   /** Number of items in cart — only valid on /en/checkout page */

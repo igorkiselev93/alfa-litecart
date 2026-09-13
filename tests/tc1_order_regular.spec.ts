@@ -30,7 +30,7 @@ test.describe('TC-1: Заказ одного товара без скидки (�
     // Step 2: Navigate to product and get price
     let unitPrice = 0;
     await allure.step(`Шаг 2: Открыть страницу товара "${PRODUCT_NAME}"`, async () => {
-      await productPage.goto(PRODUCT_PATH);
+      await productPage.gotoProduct(PRODUCT_PATH);
       await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
       expect(await productPage.isOnSale()).toBe(false);
       unitPrice = await productPage.getRegularPriceValue();

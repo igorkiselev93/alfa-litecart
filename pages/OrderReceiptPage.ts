@@ -2,6 +2,9 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class OrderReceiptPage extends BasePage {
+  // Navigated to directly via dynamic URL from CartPage, no fixed URL
+  protected readonly url = '';
+
   readonly orderNumberText: Locator;
   readonly grandTotal: Locator;
   readonly orderItemRows: Locator;

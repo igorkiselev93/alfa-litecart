@@ -3,6 +3,8 @@ import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 
 export class HomePage extends BasePage {
+  protected readonly url = '/en/';
+
   readonly header: HeaderComponent;
   readonly recentlyViewedSection: Locator;
   readonly recentlyViewedItems: Locator;
@@ -12,10 +14,6 @@ export class HomePage extends BasePage {
     this.header = new HeaderComponent(page);
     this.recentlyViewedSection = page.locator('#box-recently-viewed-products h3.title');
     this.recentlyViewedItems = page.locator('#box-recently-viewed-products ul li');
-  }
-
-  async goto(): Promise<void> {
-    await super.goto('/en/');
   }
 
   /** Find a product card link by its exact name */

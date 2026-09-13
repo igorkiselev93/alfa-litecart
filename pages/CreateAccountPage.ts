@@ -15,6 +15,8 @@ export interface UserData {
 }
 
 export class CreateAccountPage extends BasePage {
+  protected readonly url = '/en/create_account';
+
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
   readonly address1Input: Locator;
@@ -42,10 +44,6 @@ export class CreateAccountPage extends BasePage {
     this.passwordInput = page.locator('input[name="password"]');
     this.confirmPasswordInput = page.locator('xpath=//input[@name="confirmed_password"]');
     this.createAccountBtn = page.locator('button[name="create_account"]');
-  }
-
-  async goto(): Promise<void> {
-    await super.goto('/en/create_account');
   }
 
   async registerUser(user: UserData): Promise<void> {

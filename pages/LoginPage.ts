@@ -2,6 +2,8 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
+  protected readonly url = '/en/login';
+
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
@@ -18,10 +20,6 @@ export class LoginPage extends BasePage {
     );
   }
 
-  async goto(): Promise<void> {
-    await super.goto('/en/login');
-  }
-
   async login(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
@@ -34,6 +32,6 @@ export class LoginPage extends BasePage {
 
   isLoggedIn(): Locator {
     // Sidebar shows "Logout" link when authenticated
-    return this.page.locator('a[href*="logout"]');
+    return this.page.locator('#box-account a[href*="logout"]');
   }
 }
