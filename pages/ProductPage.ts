@@ -59,4 +59,31 @@ export class ProductPage extends BasePage {
     return this.parsePriceValue(text);
   }
 
+  /** Select size if the product has a required size dropdown */
+  async selectSizeIfPresent(size = 'Small'): Promise<void> {
+    const isVisible = await this.sizeSelect.isVisible().catch(() => false);
+    if (isVisible) {
+      await this.sizeSelect.selectOption({ value: size });
+    }
+  }
+
+  async setQuantity(qty: number): Promise<void> {
+    await this.quantityInput.fill(String(qty));
+  }
+
+  async addToCart(): Promise<void> {
+    const countBefore = await this.header.getCartItemCount();
+    await this.addToCartButton.click();
+    // Wait for AJAX cart update: item count must increase
+    await this.page.waitForFunction(
+      (prevCount) => {
+        const cartEl = document.querySelector('#cart a.content');
+        if (!cartEl || !cartEl.textContent) return false;
+        const m = cartEl.textContent.match(/(\d+)\s+item/);
+        return m ? parseInt(m[1], 10) > prevCount : false;
+      },
+      countBefore,
+      { timeout: 15_000 }
+    );
+  }
 }
