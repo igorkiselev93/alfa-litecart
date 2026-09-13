@@ -5,7 +5,13 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "test:clean": "if exist allure-results rmdir /s /q allure-results && npx playwright test",
+    "report": "npx allure serve allure-results",
+    "report:generate": "npx allure generate allure-results --clean -o allure-report",
+    "report:open": "npx allure open allure-report",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
