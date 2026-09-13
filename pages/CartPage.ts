@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { OrderReceiptPage } from './OrderReceiptPage';
 
 export class CartPage extends BasePage {
   readonly cartItems: Locator;
@@ -72,5 +73,22 @@ export class CartPage extends BasePage {
     return this.page.locator(
       `xpath=//table[.//th[text()="Product"]]//td[contains(text(),"${productName}")]`
     );
+  }
+
+  async isGuestCheckout(): Promise<boolean> {
+    const value = await this.customerFirstNameInput.inputValue();
+    return value.trim() === '';
+  }
+
+  async getPrintableOrderUrl(): Promise<string> {
+    const link = this.page.locator('a[href*="printable_order_copy"]');
+    return (await link.getAttribute('href')) ?? '';
+  }
+
+  async openOrderReceipt(): Promise<OrderReceiptPage> {
+    const url = await this.getPrintableOrderUrl();
+    await this.page.goto(url);
+    await this.page.waitForLoadState('domcontentloaded');
+    return new OrderReceiptPage(this.page);
   }
 }
