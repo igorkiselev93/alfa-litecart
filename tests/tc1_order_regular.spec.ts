@@ -32,5 +32,31 @@ test.describe('TC-1: Заказ одного товара без скидки (�
       expect(unitPrice).toBeGreaterThan(0);
     });
 
+    // Step 3: Set quantity and add to cart
+    await allure.step(`Шаг 3: Установить количество ${QUANTITY} и добавить в корзину`, async () => {
+      await productPage.selectSizeIfPresent();
+      await productPage.setQuantity(QUANTITY);
+      await productPage.addToCart();
+      const cartCount = await productPage.header.getCartItemCount();
+      expect(cartCount).toBe(QUANTITY);
+    });
+
+    // Step 4: Go to cart and verify total
+    await allure.step('Шаг 4: Перейти в корзину и проверить итоговую стоимость', async () => {
+      await cartPage.goto();
+      const paymentDue = await cartPage.getPaymentDueValue();
+      const expectedTotal = unitPrice * QUANTITY;
+      // RegEx validation: total must match pattern "$XX.XX"
+      const paymentText = await cartPage.getPaymentDueText();
+      expect(paymentText).toMatch(/\$\d+(\.\d{2})?/);
+      expect(paymentDue).toBe(expectedTotal);
+    });
+
+    // Step 5: Confirm order
+    await allure.step('Шаг 5: Подтвердить заказ', async () => {
+      await cartPage.confirmOrder();
+      expect(await cartPage.isOrderConfirmed()).toBe(true);
+      await expect(cartPage.page.locator('h1')).toContainText('successfully completed', { ignoreCase: true });
+    });
   });
 });
