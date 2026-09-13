@@ -21,7 +21,7 @@ test.describe('TC-1: Заказ одного товара без скидки (�
       async () => {
         await expect(authedRegisteredPage.isLoggedIn()).toBeVisible();
         // Precondition: cart must be empty — assertion belongs in the test, not in the Page Object
-        expect(await cartPage.getHeaderCartItemCount()).toBe(0);
+        expect(await cartPage.header.getCartItemCount()).toBe(0);
       },
     );
 

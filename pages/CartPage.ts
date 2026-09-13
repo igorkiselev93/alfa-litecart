@@ -1,20 +1,21 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { HeaderComponent } from './components/HeaderComponent';
 import { OrderReceiptPage } from './OrderReceiptPage';
 
 export class CartPage extends BasePage {
   protected readonly url = '/en/checkout';
 
+  readonly header: HeaderComponent;
   readonly cartItems: Locator;
   readonly confirmOrderButton: Locator;
   readonly paymentDueRow: Locator;
   readonly orderSuccessNotice: Locator;
   readonly customerFirstNameInput: Locator;
-  /** Cart item count readable from any page via header */
-  readonly headerCartCount: Locator;
 
   constructor(page: Page) {
     super(page);
+    this.header = new HeaderComponent(page);
     this.cartItems = page.locator('#box-checkout-cart ul.items li');
     this.confirmOrderButton = page.locator('button[name="confirm_order"]');
     // XPath: payment due amount — scoped to footer row, last td strong
@@ -23,23 +24,11 @@ export class CartPage extends BasePage {
     this.orderSuccessNotice = page.locator('h1');
     // Guest checkout fields
     this.customerFirstNameInput = page.locator('input[name="firstname"]');
-    // Header cart link — readable from any page, not just /checkout
-    this.headerCartCount = page.locator('#cart a.content');
   }
 
   /** Number of items in cart — only valid on /en/checkout page */
   async getCartItemCount(): Promise<number> {
     return this.cartItems.count();
-  }
-
-  /**
-   * Number of items in cart parsed from the header link.
-   * Works on any page, no navigation required.
-   */
-  async getHeaderCartItemCount(): Promise<number> {
-    const text = (await this.headerCartCount.textContent()) ?? '';
-    const match = text.match(/(\d+)\s+item/);
-    return match ? parseInt(match[1], 10) : 0;
   }
 
   async getPaymentDueText(): Promise<string> {
