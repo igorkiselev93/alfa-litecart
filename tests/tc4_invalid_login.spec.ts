@@ -25,5 +25,22 @@ test.describe('TC-4: Невалидный логин (негативный сц�
     await allure.step('Шаг 3: Проверить появление ошибки', async () => {
       await expect(loginPage.errorNotice).toBeVisible();
     });
+
+    // Step 4: Validate error text via RegEx
+    await allure.step('Шаг 4: Проверить текст ошибки по RegEx', async () => {
+        const errorText = await loginPage.getErrorText();
+        expect(errorText).toMatch(ERROR_PATTERN);
+      });
+  
+      // Step 5: Verify error notice has error styling (CSS class)
+      await allure.step('Шаг 5: Проверить стилизацию ошибки (red/error container)', async () => {
+        // The element has class "notice errors" — verify via CSS class check
+        await expect(loginPage.errorNotice).toHaveClass(/errors/);
+      });
+  
+      // Step 6: Confirm user is NOT logged in
+      await allure.step('Шаг 6: Убедиться, что пользователь не авторизован', async () => {
+        await expect(loginPage.page.locator('#box-account a[href*="logout"]')).not.toBeVisible();
+      });
   });
 });
