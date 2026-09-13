@@ -6,19 +6,20 @@ import { HomePage } from '../pages/HomePage';
 import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
 
-// Credentials for the pre-existing test account
-const TEST_EMAIL = 'igorkiselev93@gmail.com';
-const TEST_PASSWORD = 'JmfQdGYJqfi6gCawk0vz';
-
 type MyFixtures = {
   loginPage: LoginPage;
   homePage: HomePage;
   productPage: ProductPage;
   cartPage: CartPage;
   createAccountPage: CreateAccountPage;
-  /** Dynamically registers a fresh user via Faker and returns credentials */
+  /**
+   * Registers a fresh Faker user, logs them in, and returns HomePage.
+   * Each test gets its own isolated account with an empty cart.
+   * Safe for parallel execution.
+   */
+  authedRegisteredPage: HomePage;
+  /** Dynamically registers a fresh user via Faker and returns credentials only */
   registeredUser: UserData;
-  authedPage: HomePage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -37,16 +38,35 @@ export const test = base.extend<MyFixtures>({
   createAccountPage: async ({ page }, use) => {
     await use(new CreateAccountPage(page));
   },
-  authedPage: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
-    await loginPage.login(TEST_EMAIL, TEST_PASSWORD);
-    // Wait for logout link to confirm auth
-    await page.waitForSelector('a[href*="logout"]', { timeout: 10_000 });
+
+  // Dynamic isolated account: registers + logs in a fresh Faker user per test.
+  // Guarantees an empty cart and no shared state — safe for parallel runs.
+  authedRegisteredPage: async ({ page }, use) => {
+    const createAccountPage = new CreateAccountPage(page);
+
+    const user: UserData = {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      address1: faker.location.streetAddress(),
+      postcode: faker.location.zipCode('#####'),
+      city: faker.location.city(),
+      country: 'United States',
+      zone: 'New York',
+      email: faker.internet.email({ provider: 'testmail.test' }),
+      phone: faker.phone.number({ style: 'international' }),
+      password: `Pass_${faker.string.alphanumeric(8)}1!`,
+    };
+
+    // Register
+    await createAccountPage.goto();
+    await createAccountPage.registerUser(user);
+    // LiteCart auto-logs in after registration
+    await page.waitForSelector('#box-account a[href*="logout"]', { timeout: 15_000 });
+
     await use(new HomePage(page));
   },
 
-  // Dynamic user registration fixture for test isolation
+  // Registers a fresh user and returns credentials (without navigating further).
   registeredUser: async ({ page }, use) => {
     const createAccountPage = new CreateAccountPage(page);
 
@@ -65,8 +85,7 @@ export const test = base.extend<MyFixtures>({
 
     await createAccountPage.goto();
     await createAccountPage.registerUser(user);
-    // Wait for redirect after successful registration (success notice or account page)
-    await page.waitForSelector('a[href*="logout"]', { timeout: 10_000 });
+    await page.waitForSelector('#box-account a[href*="logout"]', { timeout: 15_000 });
 
     await use(user);
   },
