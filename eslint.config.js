@@ -120,8 +120,7 @@ module.exports = defineConfig([
             {
               name: '@playwright/test',
               importNames: ['expect'],
-              message:
-                'Do not use expect() in Page Objects. Assertions belong in test files.',
+              message: 'Do not use expect() in Page Objects. Assertions belong in test files.',
             },
           ],
         },
