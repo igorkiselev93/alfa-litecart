@@ -6,14 +6,25 @@ export class ProductPage extends BasePage {
   readonly header: HeaderComponent;
   readonly productTitle: Locator;
   readonly regularPrice: Locator;
+  readonly salePrice: Locator;
+  readonly quantityInput: Locator;
+  readonly addToCartButton: Locator;
+  readonly sizeSelect: Locator;
+  readonly originalPriceStrikethrough: Locator;
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
     this.productTitle = page.locator('h1[itemprop="name"]');
-    // Regular price: div with class containing "price" but no sale
-    this.regularPrice = page.locator('.price-wrapper');
-    // Sale price: the discounted strong element
+    // Price wrapper scoped to the product box (not related-products widgets)
+    this.regularPrice = page.locator('#box-product .price-wrapper');
+    this.salePrice = page.locator('#box-product .price-wrapper strong');
+    // XPath: original strikethrough price, scoped to product box
+    this.originalPriceStrikethrough = page.locator('xpath=//div[@id="box-product"]//div[contains(@class,"price-wrapper")]//s');
+    this.quantityInput = page.locator('input[name="quantity"]');
+    this.addToCartButton = page.locator('button[name="add_cart_product"]');
+    // Size option select (some products require it)
+    this.sizeSelect = page.locator('select[name="options[Size]"]');
   }
 
   async goto(productPath: string): Promise<void> {
@@ -32,6 +43,15 @@ export class ProductPage extends BasePage {
   parsePriceValue(priceText: string): number {
     const match = priceText.match(/\$(\d+(?:\.\d+)?)/);
     return match ? parseFloat(match[1]) : 0;
+  }
+
+  async isOnSale(): Promise<boolean> {
+    return this.originalPriceStrikethrough.isVisible();
+  }
+
+  async getSalePriceValue(): Promise<number> {
+    const text = (await this.salePrice.textContent()) ?? '';
+    return this.parsePriceValue(text);
   }
 
   async getRegularPriceValue(): Promise<number> {
