@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
+import { parseCurrencyAmount } from '../utils/price-utils';
 
 export class ProductPage extends BasePage {
   // URL is dynamic (per-product path), navigation handled by goto(productPath)
@@ -36,7 +37,7 @@ export class ProductPage extends BasePage {
     await this.page.goto(productPath);
   }
 
-  async getTitle(): Promise<string> {
+  async getProductTitle(): Promise<string> {
     return (await this.productTitle.textContent()) ?? '';
   }
 
@@ -46,8 +47,7 @@ export class ProductPage extends BasePage {
 
   /** Parse price number from text like "$20" or "$18" */
   parsePriceValue(priceText: string): number {
-    const match = priceText.match(/\$(\d+(?:\.\d+)?)/);
-    return match ? parseFloat(match[1]) : 0;
+    return parseCurrencyAmount(priceText);
   }
 
   async isOnSale(): Promise<boolean> {

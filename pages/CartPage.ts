@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { OrderReceiptPage } from './OrderReceiptPage';
+import { parseCurrencyAmount } from '../utils/price-utils';
 
 export class CartPage extends BasePage {
   protected readonly url = '/en/checkout';
@@ -37,8 +38,7 @@ export class CartPage extends BasePage {
 
   /** Parse dollar amount from payment due cell */
   parseTotal(text: string): number {
-    const match = text.match(/\$(\d+(?:\.\d+)?)/);
-    return match ? parseFloat(match[1]) : 0;
+    return parseCurrencyAmount(text);
   }
 
   async getPaymentDueValue(): Promise<number> {

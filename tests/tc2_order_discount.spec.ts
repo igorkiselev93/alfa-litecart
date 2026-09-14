@@ -50,8 +50,8 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
       const paymentDue = await cartPage.getPaymentDueValue();
       const expectedTotal = salePrice * QUANTITY;
       const paymentText = await cartPage.getPaymentDueText();
-      // RegEx: must be dollar amount
-      expect(paymentText).toMatch(/\$\d+(\.\d{2})?/);
+      // RegEx: must be currency amount
+      expect(paymentText).toMatch(/[$€]\d+(\.\d{2})?/);
       expect(paymentDue).toBe(expectedTotal);
     });
 
@@ -85,7 +85,7 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
 
         // Grand Total via RegEx and value check
         const grandTotalText = await receipt.getGrandTotalText();
-        expect(grandTotalText).toMatch(/\$\d+\.\d{2}/);
+        expect(grandTotalText).toMatch(/[$€]\d+\.\d{2}/);
         expect(await receipt.getGrandTotalValue()).toBe(salePrice * QUANTITY);
       },
     );

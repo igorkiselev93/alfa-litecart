@@ -49,9 +49,9 @@ test.describe('TC-1: Заказ одного товара без скидки (�
       await cartPage.goto();
       const paymentDue = await cartPage.getPaymentDueValue();
       const expectedTotal = unitPrice * QUANTITY;
-      // RegEx validation: total must match pattern "$XX.XX"
+      // RegEx validation: total must match pattern "$XX.XX" or "€XX.XX"
       const paymentText = await cartPage.getPaymentDueText();
-      expect(paymentText).toMatch(/\$\d+(\.\d{2})?/);
+      expect(paymentText).toMatch(/[$€]\d+(\.\d{2})?/);
       expect(paymentDue).toBe(expectedTotal);
     });
 
@@ -83,7 +83,7 @@ test.describe('TC-1: Заказ одного товара без скидки (�
 
       // Grand Total via RegEx pattern and value check
       const grandTotalText = await receipt.getGrandTotalText();
-      expect(grandTotalText).toMatch(/\$\d+\.\d{2}/);
+      expect(grandTotalText).toMatch(/[$€]\d+\.\d{2}/);
       expect(await receipt.getGrandTotalValue()).toBe(unitPrice * QUANTITY);
     });
   });

@@ -44,7 +44,7 @@ test.describe('TC-3: Заказ товара без авторизации (го
       // Total should be $40 (2 × $20)
       const total = await cartPage.getPaymentDueValue();
       const totalText = await cartPage.getPaymentDueText();
-      expect(totalText).toMatch(/\$\d+(\.\d{2})?/);
+      expect(totalText).toMatch(/[$€]\d+(\.\d{2})?/);
       expect(total).toBe(40);
     });
 

@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { parseCurrencyAmount } from '../utils/price-utils';
 
 export class OrderReceiptPage extends BasePage {
   // Navigated to directly via dynamic URL from CartPage, no fixed URL
@@ -31,8 +32,7 @@ export class OrderReceiptPage extends BasePage {
 
   /** Parses Grand Total dollar amount */
   parseAmount(text: string): number {
-    const match = text.match(/\$(\d+(?:\.\d+)?)/);
-    return match ? parseFloat(match[1]) : 0;
+    return parseCurrencyAmount(text);
   }
 
   async getGrandTotalValue(): Promise<number> {
