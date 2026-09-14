@@ -1,8 +1,9 @@
 import { test, expect } from '../fixtures/page-fixtures';
 import * as allure from 'allure-js-commons';
 import { OrderSuccessPage } from '../pages/OrderSuccessPage';
+import { LOCALE } from '../config/locale';
 
-const PRODUCT_PATH = '/en/rubber-ducks-c-1/red-duck-p-3';
+const PRODUCT_PATH = `/${LOCALE}/rubber-ducks-c-1/red-duck-p-3`;
 const PRODUCT_NAME = 'Red Duck';
 const QUANTITY = 3;
 

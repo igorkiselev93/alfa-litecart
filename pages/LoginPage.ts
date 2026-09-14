@@ -1,8 +1,9 @@
 import { Page, Locator } from '@playwright/test';
 import { NavigablePage } from './NavigablePage';
+import { LOCALE } from '../config/locale';
 
 export class LoginPage extends NavigablePage {
-  protected readonly url = '/en/login';
+  protected readonly url = `/${LOCALE}/login`;
 
   readonly emailInput: Locator;
   readonly passwordInput: Locator;

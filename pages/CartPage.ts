@@ -3,9 +3,10 @@ import { NavigablePage } from './NavigablePage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { OrderSuccessPage } from './OrderSuccessPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
+import { LOCALE } from '../config/locale';
 
 export class CartPage extends NavigablePage {
-  protected readonly url = '/en/checkout';
+  protected readonly url = `/${LOCALE}/checkout`;
 
   readonly header: HeaderComponent;
   readonly cartItems: Locator;

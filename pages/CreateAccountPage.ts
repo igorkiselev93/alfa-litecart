@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { NavigablePage } from './NavigablePage';
+import { LOCALE } from '../config/locale';
 
 export interface UserData {
   firstName: string;
@@ -15,7 +16,7 @@ export interface UserData {
 }
 
 export class CreateAccountPage extends NavigablePage {
-  protected readonly url = '/en/create_account';
+  protected readonly url = `/${LOCALE}/create_account`;
 
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;

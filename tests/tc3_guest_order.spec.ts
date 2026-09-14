@@ -1,10 +1,10 @@
 import { test, expect } from '../fixtures/page-fixtures';
 import * as allure from 'allure-js-commons';
+import { LOCALE } from '../config/locale';
 
-// Two different products for guest scenario
-const PRODUCT_1_PATH = '/en/rubber-ducks-c-1/red-duck-p-3';
+const PRODUCT_1_PATH = `/${LOCALE}/rubber-ducks-c-1/red-duck-p-3`;
 const PRODUCT_1_NAME = 'Red Duck';
-const PRODUCT_2_PATH = '/en/rubber-ducks-c-1/blue-duck-p-4';
+const PRODUCT_2_PATH = `/${LOCALE}/rubber-ducks-c-1/blue-duck-p-4`;
 const PRODUCT_2_NAME = 'Blue Duck';
 
 test.describe('TC-3: Заказ товара без авторизации (гость)', () => {

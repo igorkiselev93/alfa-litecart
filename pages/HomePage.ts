@@ -1,9 +1,10 @@
 import { Page, Locator } from '@playwright/test';
 import { NavigablePage } from './NavigablePage';
 import { HeaderComponent } from './components/HeaderComponent';
+import { LOCALE } from '../config/locale';
 
 export class HomePage extends NavigablePage {
-  protected readonly url = '/en/';
+  protected readonly url = `/${LOCALE}/`;
 
   readonly header: HeaderComponent;
   readonly recentlyViewedSection: Locator;
