@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/page-fixtures';
 import * as allure from 'allure-js-commons';
+import { OrderSuccessPage } from '../pages/OrderSuccessPage';
 
 const PRODUCT_PATH = '/en/rubber-ducks-c-1/subcategory-c-2/yellow-duck-p-1';
 const PRODUCT_NAME = 'Yellow Duck';
@@ -56,10 +57,11 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
     });
 
     // Step 5: Confirm order
+    let orderSuccess: OrderSuccessPage;
     await allure.step('Шаг 5: Подтвердить заказ', async () => {
-      await cartPage.confirmOrder();
-      expect(await cartPage.isOrderConfirmed()).toBe(true);
-      await expect(cartPage.orderSuccessNotice).toContainText('successfully completed', {
+      orderSuccess = await cartPage.confirmOrder();
+      expect(await orderSuccess.isOrderConfirmed()).toBe(true);
+      await expect(orderSuccess.successHeading).toContainText('successfully completed', {
         ignoreCase: true,
       });
     });
@@ -68,7 +70,7 @@ test.describe('TC-2: Заказ одного товара со скидкой (�
     await allure.step(
       'Шаг 6: Открыть чек и проверить корректность заказа (скидочная цена)',
       async () => {
-        const receipt = await cartPage.openOrderReceipt();
+        const receipt = await orderSuccess.openOrderReceipt();
 
         // Order number must be present
         const orderNum = await receipt.getOrderNumber();
