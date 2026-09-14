@@ -18,6 +18,11 @@ export abstract class BasePage {
     return this.page.locator('#box-account a[href*="logout"]');
   }
 
+  /** Waits until the logout link appears — confirms successful login/registration */
+  async waitForLoginConfirmation(timeout = 15_000): Promise<void> {
+    await this.isLoggedIn().waitFor({ state: 'visible', timeout });
+  }
+
   /** Returns the page title for assertions */
   async getTitle(): Promise<string> {
     return this.page.title();

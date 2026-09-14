@@ -60,8 +60,8 @@ export const test = base.extend<MyFixtures>({
     // Register
     await createAccountPage.goto();
     await createAccountPage.registerUser(user);
-    // LiteCart auto-logs in after registration
-    await page.waitForSelector('#box-account a[href*="logout"]', { timeout: 15_000 });
+    // LiteCart auto-logs in after registration — wait via Page Object
+    await createAccountPage.waitForLoginConfirmation();
 
     await use(new HomePage(page));
   },
@@ -85,7 +85,7 @@ export const test = base.extend<MyFixtures>({
 
     await createAccountPage.goto();
     await createAccountPage.registerUser(user);
-    await page.waitForSelector('#box-account a[href*="logout"]', { timeout: 15_000 });
+    await createAccountPage.waitForLoginConfirmation();
 
     await use(user);
   },
