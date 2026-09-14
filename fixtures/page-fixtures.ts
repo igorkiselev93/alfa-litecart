@@ -18,8 +18,6 @@ type MyFixtures = {
    * Safe for parallel execution.
    */
   authedRegisteredPage: HomePage;
-  /** Dynamically registers a fresh user via Faker and returns credentials only */
-  registeredUser: UserData;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -39,7 +37,7 @@ export const test = base.extend<MyFixtures>({
     await use(new CreateAccountPage(page));
   },
 
-  // Dynamic isolated account: registers + logs in a fresh Faker user per test.
+  // Registers + logs in a fresh isolated Faker user per test.
   // Guarantees an empty cart and no shared state — safe for parallel runs.
   authedRegisteredPage: async ({ page }, use) => {
     const createAccountPage = new CreateAccountPage(page);
@@ -57,37 +55,12 @@ export const test = base.extend<MyFixtures>({
       password: `Pass_${faker.string.alphanumeric(8)}1!`,
     };
 
-    // Register
     await createAccountPage.goto();
     await createAccountPage.registerUser(user);
     // LiteCart auto-logs in after registration — wait via Page Object
     await createAccountPage.waitForLoginConfirmation();
 
     await use(new HomePage(page));
-  },
-
-  // Registers a fresh user and returns credentials (without navigating further).
-  registeredUser: async ({ page }, use) => {
-    const createAccountPage = new CreateAccountPage(page);
-
-    const user: UserData = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      address1: faker.location.streetAddress(),
-      postcode: faker.location.zipCode('#####'),
-      city: faker.location.city(),
-      country: 'United States',
-      zone: 'New York',
-      email: faker.internet.email({ provider: 'testmail.test' }),
-      phone: faker.phone.number({ style: 'international' }),
-      password: `Pass_${faker.string.alphanumeric(8)}1!`,
-    };
-
-    await createAccountPage.goto();
-    await createAccountPage.registerUser(user);
-    await createAccountPage.waitForLoginConfirmation();
-
-    await use(user);
   },
 });
 
