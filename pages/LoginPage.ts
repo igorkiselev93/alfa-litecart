@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { NavigablePage } from './NavigablePage';
+import { requireText } from '../utils/element-utils';
 import { LOCALE } from '../config/locale';
 
 export class LoginPage extends NavigablePage {
@@ -28,6 +29,6 @@ export class LoginPage extends NavigablePage {
   }
 
   async getErrorText(): Promise<string> {
-    return (await this.errorNotice.textContent()) ?? '';
+    return requireText(this.errorNotice);
   }
 }

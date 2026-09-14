@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
+import { requireText } from '../utils/element-utils';
 
 export class OrderReceiptPage extends TransientPage {
   readonly orderNumberText: Locator;
@@ -9,7 +10,6 @@ export class OrderReceiptPage extends TransientPage {
 
   constructor(page: Page) {
     super(page);
-    // "Order #714" text node
     // XPath: order number div inside header table (e.g. 'Order #714')
     this.orderNumberText = page.locator(
       'xpath=//header//td[last()]//div[contains(text(),"Order #")]',
@@ -24,16 +24,15 @@ export class OrderReceiptPage extends TransientPage {
 
   /** Returns the order number string, e.g. "Order #714" */
   async getOrderNumber(): Promise<string> {
-    return (await this.orderNumberText.textContent()) ?? '';
-  }
-
-  async getGrandTotalValue(): Promise<number> {
-    const text = (await this.grandTotal.textContent()) ?? '';
-    return parseCurrencyAmount(text);
+    return requireText(this.orderNumberText);
   }
 
   async getGrandTotalText(): Promise<string> {
-    return (await this.grandTotal.textContent()) ?? '';
+    return requireText(this.grandTotal);
+  }
+
+  async getGrandTotalValue(): Promise<number> {
+    return parseCurrencyAmount(await this.getGrandTotalText());
   }
 
   /** Returns all item rows as parsed objects */
@@ -45,11 +44,11 @@ export class OrderReceiptPage extends TransientPage {
     for (let i = 0; i < count; i++) {
       const row = this.orderItemRows.nth(i);
       const cells = row.locator('td');
-      const qty = parseInt((await cells.nth(0).textContent()) ?? '0', 10);
-      const item = ((await cells.nth(1).textContent()) ?? '').trim();
-      const sku = ((await cells.nth(2).textContent()) ?? '').trim();
-      const unitPrice = parseCurrencyAmount((await cells.nth(3).textContent()) ?? '');
-      const sum = parseCurrencyAmount((await cells.nth(5).textContent()) ?? '');
+      const qty = parseInt(await requireText(cells.nth(0)), 10);
+      const item = (await requireText(cells.nth(1))).trim();
+      const sku = (await requireText(cells.nth(2))).trim();
+      const unitPrice = parseCurrencyAmount(await requireText(cells.nth(3)));
+      const sum = parseCurrencyAmount(await requireText(cells.nth(5)));
       items.push({ qty, item, sku, unitPrice, sum });
     }
     return items;

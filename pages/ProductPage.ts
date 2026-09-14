@@ -2,6 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { parseCurrencyAmount } from '../utils/price-utils';
+import { requireText } from '../utils/element-utils';
 
 export class ProductPage extends TransientPage {
   readonly header: HeaderComponent;
@@ -35,11 +36,11 @@ export class ProductPage extends TransientPage {
   }
 
   async getProductTitle(): Promise<string> {
-    return (await this.productTitle.textContent()) ?? '';
+    return requireText(this.productTitle);
   }
 
   async getPriceText(): Promise<string> {
-    return (await this.regularPrice.textContent()) ?? '';
+    return requireText(this.regularPrice);
   }
 
   async isOnSale(): Promise<boolean> {
@@ -47,13 +48,11 @@ export class ProductPage extends TransientPage {
   }
 
   async getSalePriceValue(): Promise<number> {
-    const text = (await this.salePrice.textContent()) ?? '';
-    return parseCurrencyAmount(text);
+    return parseCurrencyAmount(await requireText(this.salePrice));
   }
 
   async getRegularPriceValue(): Promise<number> {
-    const text = await this.getPriceText();
-    return parseCurrencyAmount(text);
+    return parseCurrencyAmount(await this.getPriceText());
   }
 
   /** Select size if the product has a required size dropdown */
