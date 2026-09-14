@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { parseCurrencyAmount } from '../utils/price-utils';
@@ -70,9 +70,7 @@ export class ProductPage extends TransientPage {
   async addToCart(): Promise<void> {
     const countBefore = await this.header.getCartItemCount();
     await this.addToCartButton.click();
-    // Wait for AJAX cart update using Playwright polling — no DOM access needed
-    await expect
-      .poll(async () => this.header.getCartItemCount(), { timeout: 15_000 })
-      .toBeGreaterThan(countBefore);
+    // Wait for AJAX cart update via polling on the header locator
+    await this.header.waitForCartCountAbove(countBefore);
   }
 }
