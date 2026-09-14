@@ -27,14 +27,9 @@ export class OrderReceiptPage extends TransientPage {
     return (await this.orderNumberText.textContent()) ?? '';
   }
 
-  /** Parses Grand Total dollar amount */
-  parseAmount(text: string): number {
-    return parseCurrencyAmount(text);
-  }
-
   async getGrandTotalValue(): Promise<number> {
     const text = (await this.grandTotal.textContent()) ?? '';
-    return this.parseAmount(text);
+    return parseCurrencyAmount(text);
   }
 
   async getGrandTotalText(): Promise<string> {
@@ -53,8 +48,8 @@ export class OrderReceiptPage extends TransientPage {
       const qty = parseInt((await cells.nth(0).textContent()) ?? '0', 10);
       const item = ((await cells.nth(1).textContent()) ?? '').trim();
       const sku = ((await cells.nth(2).textContent()) ?? '').trim();
-      const unitPrice = this.parseAmount((await cells.nth(3).textContent()) ?? '');
-      const sum = this.parseAmount((await cells.nth(5).textContent()) ?? '');
+      const unitPrice = parseCurrencyAmount((await cells.nth(3).textContent()) ?? '');
+      const sum = parseCurrencyAmount((await cells.nth(5).textContent()) ?? '');
       items.push({ qty, item, sku, unitPrice, sum });
     }
     return items;

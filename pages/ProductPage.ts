@@ -42,23 +42,18 @@ export class ProductPage extends TransientPage {
     return (await this.regularPrice.textContent()) ?? '';
   }
 
-  /** Parse price number from text like "$20" or "$18" */
-  parsePriceValue(priceText: string): number {
-    return parseCurrencyAmount(priceText);
-  }
-
   async isOnSale(): Promise<boolean> {
     return this.originalPriceStrikethrough.isVisible();
   }
 
   async getSalePriceValue(): Promise<number> {
     const text = (await this.salePrice.textContent()) ?? '';
-    return this.parsePriceValue(text);
+    return parseCurrencyAmount(text);
   }
 
   async getRegularPriceValue(): Promise<number> {
     const text = await this.getPriceText();
-    return this.parsePriceValue(text);
+    return parseCurrencyAmount(text);
   }
 
   /** Select size if the product has a required size dropdown */
