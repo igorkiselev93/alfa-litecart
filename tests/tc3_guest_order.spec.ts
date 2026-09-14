@@ -1,14 +1,15 @@
 import { test, expect } from '../fixtures/page-fixtures';
 import * as allure from 'allure-js-commons';
 import { LOCALE } from '../config/locale';
+import { addProductToCart } from '../helpers/order-helpers';
 
 const PRODUCT_1_PATH = `/${LOCALE}/rubber-ducks-c-1/red-duck-p-3`;
 const PRODUCT_1_NAME = 'Red Duck';
 const PRODUCT_2_PATH = `/${LOCALE}/rubber-ducks-c-1/blue-duck-p-4`;
 const PRODUCT_2_NAME = 'Blue Duck';
 
-test.describe('TC-3: Заказ товара без авторизации (гость)', () => {
-  test('должен добавить 2 разных товара, проверить корзину, поля гостя и блок "Recently Viewed"', async ({
+test.describe('TC-3: Guest checkout', () => {
+  test('should add 2 products, verify cart, guest fields and Recently Viewed block', async ({
     productPage,
     cartPage,
     homePage,
@@ -18,55 +19,37 @@ test.describe('TC-3: Заказ товара без авторизации (го
     await allure.story('Guest user adds products and checks recently viewed');
 
     // Step 1: Add first product to cart
-    await allure.step(`Шаг 1: Открыть "${PRODUCT_1_NAME}" и добавить в корзину`, async () => {
-      await productPage.gotoProduct(PRODUCT_1_PATH);
-      await expect(productPage.productTitle).toContainText(PRODUCT_1_NAME);
-      await productPage.selectSizeIfPresent();
-      await productPage.setQuantity(1);
-      await productPage.addToCart();
+    await allure.step(`Step 1: Open "${PRODUCT_1_NAME}" and add to cart`, async () => {
+      await addProductToCart(productPage, PRODUCT_1_PATH, PRODUCT_1_NAME);
     });
 
     // Step 2: Add second product to cart
-    await allure.step(`Шаг 2: Открыть "${PRODUCT_2_NAME}" и добавить в корзину`, async () => {
-      await productPage.gotoProduct(PRODUCT_2_PATH);
-      await expect(productPage.productTitle).toContainText(PRODUCT_2_NAME);
-      await productPage.selectSizeIfPresent();
-      await productPage.setQuantity(1);
-      await productPage.addToCart();
+    await allure.step(`Step 2: Open "${PRODUCT_2_NAME}" and add to cart`, async () => {
+      await addProductToCart(productPage, PRODUCT_2_PATH, PRODUCT_2_NAME);
     });
 
-    // Step 3: Go to cart and validate both products present
-    await allure.step('Шаг 3: Проверить оба товара в корзине и итоговую стоимость', async () => {
+    await allure.step('Step 3: Verify both products in cart and order total', async () => {
       await cartPage.goto();
-      // Both products in order summary
       await expect(cartPage.getOrderSummaryRow(PRODUCT_1_NAME)).toBeVisible();
       await expect(cartPage.getOrderSummaryRow(PRODUCT_2_NAME)).toBeVisible();
-      // Total should be $40 (2 × $20)
       const total = await cartPage.getPaymentDueValue();
       const totalText = await cartPage.getPaymentDueText();
       expect(totalText).toMatch(/[$€]\d+(\.\d{2})?/);
       expect(total).toBe(40);
     });
 
-    // Step 4: Check guest customer fields are empty
-    await allure.step('Шаг 4: Проверить, что поля покупателя пусты (гостевой режим)', async () => {
+    await allure.step('Step 4: Verify customer fields are empty (guest mode)', async () => {
       const isGuest = await cartPage.isGuestCheckout();
       expect(isGuest).toBe(true);
     });
 
-    // Step 5: Return to home and check Recently Viewed
-    await allure.step(
-      'Шаг 5: Вернуться на главную и проверить блок "Recently Viewed"',
-      async () => {
-        await homePage.goto();
-        // Recently Viewed should show the products we visited
-        const recentCount = await homePage.getRecentlyViewedCount();
-        expect(recentCount).toBeGreaterThan(0);
-        // At least one of our products must appear
-        const product1InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_1_NAME);
-        const product2InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_2_NAME);
-        expect(product1InRecent || product2InRecent).toBe(true);
-      },
-    );
+    await allure.step('Step 5: Return to home page and verify Recently Viewed block', async () => {
+      await homePage.goto();
+      const recentCount = await homePage.getRecentlyViewedCount();
+      expect(recentCount).toBeGreaterThan(0);
+      const product1InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_1_NAME);
+      const product2InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_2_NAME);
+      expect(product1InRecent || product2InRecent).toBe(true);
+    });
   });
 });
