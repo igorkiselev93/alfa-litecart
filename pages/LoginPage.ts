@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { NavigablePage } from './NavigablePage';
 
-export class LoginPage extends BasePage {
+export class LoginPage extends NavigablePage {
   protected readonly url = '/en/login';
 
   readonly emailInput: Locator;

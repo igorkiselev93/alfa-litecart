@@ -1,12 +1,9 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { TransientPage } from './TransientPage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { parseCurrencyAmount } from '../utils/price-utils';
 
-export class ProductPage extends BasePage {
-  // URL is dynamic (per-product path), navigation handled by goto(productPath)
-  protected readonly url = '';
-
+export class ProductPage extends TransientPage {
   readonly header: HeaderComponent;
   readonly productTitle: Locator;
   readonly regularPrice: Locator;

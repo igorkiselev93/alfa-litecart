@@ -1,11 +1,8 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { TransientPage } from './TransientPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
 
-export class OrderReceiptPage extends BasePage {
-  // Navigated to directly via dynamic URL from CartPage, no fixed URL
-  protected readonly url = '';
-
+export class OrderReceiptPage extends TransientPage {
   readonly orderNumberText: Locator;
   readonly grandTotal: Locator;
   readonly orderItemRows: Locator;

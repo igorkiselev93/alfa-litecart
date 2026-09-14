@@ -1,8 +1,8 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { NavigablePage } from './NavigablePage';
 import { HeaderComponent } from './components/HeaderComponent';
 
-export class HomePage extends BasePage {
+export class HomePage extends NavigablePage {
   protected readonly url = '/en/';
 
   readonly header: HeaderComponent;

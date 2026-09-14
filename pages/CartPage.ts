@@ -1,10 +1,10 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { NavigablePage } from './NavigablePage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { OrderReceiptPage } from './OrderReceiptPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
 
-export class CartPage extends BasePage {
+export class CartPage extends NavigablePage {
   protected readonly url = '/en/checkout';
 
   readonly header: HeaderComponent;

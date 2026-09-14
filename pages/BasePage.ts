@@ -1,16 +1,15 @@
 import { Page, Locator } from '@playwright/test';
 
 export abstract class BasePage {
-  protected abstract readonly url: string;
-
   constructor(readonly page: Page) {}
-
-  async goto(): Promise<void> {
-    await this.page.goto(this.url);
-  }
 
   async getCurrentUrl(): Promise<string> {
     return this.page.url();
+  }
+
+  /** Returns the page title (<title> tag) */
+  async getTitle(): Promise<string> {
+    return this.page.title();
   }
 
   /** Logout link visible in sidebar when user is authenticated */
@@ -21,11 +20,6 @@ export abstract class BasePage {
   /** Waits until the logout link appears — confirms successful login/registration */
   async waitForLoginConfirmation(timeout = 15_000): Promise<void> {
     await this.isLoggedIn().waitFor({ state: 'visible', timeout });
-  }
-
-  /** Returns the page title for assertions */
-  async getTitle(): Promise<string> {
-    return this.page.title();
   }
 
   protected async waitForPageLoad(): Promise<void> {
