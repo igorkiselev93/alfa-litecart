@@ -46,17 +46,4 @@ export class HeaderComponent extends BaseComponent {
   async openCart(): Promise<void> {
     await this.cartLink.click();
   }
-
-  /** Waits until cart item count exceeds prevCount (polls via Playwright locator) */
-  async waitForCartCountAbove(prevCount: number, timeout = 15_000): Promise<void> {
-    const start = Date.now();
-    while (Date.now() - start < timeout) {
-      const current = await this.getCartItemCount().catch(() => prevCount);
-      if (current > prevCount) return;
-      await this.cartLink.page().waitForTimeout(300);
-    }
-    throw new Error(
-      `Cart item count did not exceed ${prevCount} within ${timeout}ms`,
-    );
-  }
 }
