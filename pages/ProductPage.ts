@@ -47,6 +47,10 @@ export class ProductPage extends TransientPage {
     return this.originalPriceStrikethrough.isVisible();
   }
 
+  async getOriginalPriceValue(): Promise<number> {
+    return parseCurrencyAmount(await requireText(this.originalPriceStrikethrough));
+  }
+
   async getSalePriceValue(): Promise<number> {
     return parseCurrencyAmount(await requireText(this.salePrice));
   }

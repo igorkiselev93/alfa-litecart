@@ -25,14 +25,20 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
       },
     );
 
-    // Step 2: Navigate to sale product and get discounted price
+    // Step 2: Navigate to sale product, verify discount and get sale price
     let salePrice = 0;
-    await allure.step(`Step 2: Open sale product page "${PRODUCT_NAME}"`, async () => {
+    await allure.step(`Step 2: Open sale product page "${PRODUCT_NAME}" and verify discount`, async () => {
       await productPage.gotoProduct(PRODUCT_PATH);
       await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
       expect(await productPage.isOnSale()).toBe(true);
+
+      const originalPrice = await productPage.getOriginalPriceValue();
       salePrice = await productPage.getSalePriceValue();
+
+      expect(originalPrice).toBeGreaterThan(0);
       expect(salePrice).toBeGreaterThan(0);
+      // Core assertion: sale price must actually be lower than the original
+      expect(salePrice).toBeLessThan(originalPrice);
     });
 
     // Steps 3–6: Add to cart, verify total, confirm order, verify receipt
