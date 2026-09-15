@@ -12,19 +12,22 @@ export interface OrderResult {
 }
 
 /**
- * Navigates to a product page, verifies the title, and adds it to the cart.
+ * Navigates to a product page, verifies the title, adds it to the cart,
+ * and returns the unit price read from the product page.
  */
 export async function addProductToCart(
   productPage: ProductPage,
   productPath: string,
   productName: string,
   quantity = 1,
-): Promise<void> {
+): Promise<number> {
   await productPage.gotoProduct(productPath);
   await expect(productPage.productTitle).toContainText(productName);
+  const unitPrice = await productPage.getRegularPriceValue();
   await productPage.selectSizeIfPresent();
   await productPage.setQuantity(quantity);
   await productPage.addToCart(quantity);
+  return unitPrice;
 }
 
 /**

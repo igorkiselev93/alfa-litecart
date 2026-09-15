@@ -31,3 +31,11 @@ export function parseCurrencyAmount(text: string): number {
 export function calcTotal(unitPrice: number, quantity: number): number {
   return Math.round(unitPrice * quantity * 100) / 100;
 }
+
+/**
+ * Sums multiple prices and rounds to 2 decimal places.
+ * Use when combining prices from different products.
+ */
+export function sumPrices(...prices: number[]): number {
+  return Math.round(prices.reduce((acc, p) => acc + p, 0) * 100) / 100;
+}
