@@ -13,7 +13,7 @@ export default defineConfig({
     [
       'allure-playwright',
       {
-        outputFolder: 'allure-results',
+        resultsDir: 'allure-results',
         // Attach Playwright video, trace and screenshot to each Allure test result
         environmentInfo: {
           framework: 'Playwright',
