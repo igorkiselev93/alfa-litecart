@@ -58,33 +58,37 @@ export async function addToCartAndOrder(
     expect(paymentDue).toBe(expectedTotal);
   });
 
-  let orderSuccess!: OrderSuccessPage;
-  await allure.step('Step 5: Confirm order', async () => {
-    orderSuccess = await cartPage.confirmOrder();
-    expect(await orderSuccess.isOrderConfirmed()).toBe(true);
-    await expect(orderSuccess.successHeading).toContainText('successfully completed', {
+  const orderSuccess = await allure.step('Step 5: Confirm order', async () => {
+    const success = await cartPage.confirmOrder();
+    expect(await success.isOrderConfirmed()).toBe(true);
+    await expect(success.successHeading).toContainText('successfully completed', {
       ignoreCase: true,
     });
+    return success;
   });
 
-  let receipt!: OrderReceiptPage;
-  await allure.step('Step 6: Open printable receipt and verify order details', async () => {
-    receipt = await orderSuccess.openOrderReceipt();
+  const receipt = await allure.step(
+    'Step 6: Open printable receipt and verify order details',
+    async () => {
+      const r = await orderSuccess.openOrderReceipt();
 
-    const orderNum = await receipt.getOrderNumber();
-    expect(orderNum).toMatch(/order\s*#\d+/i);
+      const orderNum = await r.getOrderNumber();
+      expect(orderNum).toMatch(/order\s*#\d+/i);
 
-    const items = await receipt.getOrderItems();
-    expect(items).toHaveLength(1);
-    expect(items[0].item).toContain(productName);
-    expect(items[0].qty).toBe(quantity);
-    expect(items[0].unitPrice).toBe(unitPrice);
-    expect(items[0].sum).toBe(calcTotal(unitPrice, quantity));
+      const items = await r.getOrderItems();
+      expect(items).toHaveLength(1);
+      expect(items[0].item).toContain(productName);
+      expect(items[0].qty).toBe(quantity);
+      expect(items[0].unitPrice).toBe(unitPrice);
+      expect(items[0].sum).toBe(calcTotal(unitPrice, quantity));
 
-    const grandTotalText = await receipt.getGrandTotalText();
-    expect(grandTotalText).toMatch(/[$€]\d+\.\d{2}/);
-    expect(await receipt.getGrandTotalValue()).toBe(calcTotal(unitPrice, quantity));
-  });
+      const grandTotalText = await r.getGrandTotalText();
+      expect(grandTotalText).toMatch(/[$€]\d+\.\d{2}/);
+      expect(await r.getGrandTotalValue()).toBe(calcTotal(unitPrice, quantity));
+
+      return r;
+    },
+  );
 
   return { orderSuccess, receipt };
 }

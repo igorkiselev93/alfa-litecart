@@ -23,8 +23,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
     });
 
     // Step 2: Navigate to sale product, verify discount and get sale price
-    let salePrice = 0;
-    await allure.step(
+    const salePrice = await allure.step(
       `Step 2: Open sale product page "${PRODUCT_NAME}" and verify discount`,
       async () => {
         await productPage.gotoProduct(PRODUCT_PATH);
@@ -32,12 +31,13 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
         expect(await productPage.isOnSale()).toBe(true);
 
         const originalPrice = await productPage.getOriginalPriceValue();
-        salePrice = await productPage.getSalePriceValue();
+        const price = await productPage.getSalePriceValue();
 
         expect(originalPrice).toBeGreaterThan(0);
-        expect(salePrice).toBeGreaterThan(0);
+        expect(price).toBeGreaterThan(0);
         // Core assertion: sale price must actually be lower than the original
-        expect(salePrice).toBeLessThan(originalPrice);
+        expect(price).toBeLessThan(originalPrice);
+        return price;
       },
     );
 
