@@ -67,17 +67,11 @@ export class ProductPage extends TransientPage {
     await this.quantityInput.fill(String(qty));
   }
 
-  async addToCart(): Promise<void> {
-    const [response] = await Promise.all([
-      this.page.waitForResponse(
-        res => res.url().includes('/ajax/cart.json') && res.request().method() === 'POST',
-        { timeout: 15_000 },
-      ),
-      this.addToCartButton.click(),
-    ]);
-
-    if (!response.ok()) {
-      throw new Error(`Cart API responded with ${response.status()}: ${response.url()}`);
-    }
+  async addToCart(quantity = 1): Promise<void> {
+    const countBefore = await this.header.getCartItemCount();
+    await this.addToCartButton.click();
+    // Wait for the header DOM to reflect the new count.
+    // This implicitly guarantees the AJAX request completed and the page processed it.
+    await this.header.waitForCartCount(countBefore + quantity);
   }
 }

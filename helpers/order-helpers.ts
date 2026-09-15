@@ -23,7 +23,7 @@ export async function addProductToCart(
   await expect(productPage.productTitle).toContainText(productName);
   await productPage.selectSizeIfPresent();
   await productPage.setQuantity(quantity);
-  await productPage.addToCart();
+  await productPage.addToCart(quantity);
 }
 
 /**
@@ -40,7 +40,7 @@ export async function addToCartAndOrder(
   await allure.step(`Step 3: Set quantity to ${quantity} and add to cart`, async () => {
     await productPage.selectSizeIfPresent();
     await productPage.setQuantity(quantity);
-    await productPage.addToCart();
+    await productPage.addToCart(quantity);
     const cartCount = await productPage.header.getCartItemCount();
     expect(cartCount).toBe(quantity);
   });
