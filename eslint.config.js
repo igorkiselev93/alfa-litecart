@@ -108,6 +108,7 @@ module.exports = defineConfig([
   // ── Page Object files – stricter rules ───────────────────────────────────────
   {
     files: ['pages/**/*.ts'],
+    plugins: { playwright },
     rules: {
       // PO methods must declare return types explicitly
       '@typescript-eslint/explicit-function-return-type': 'error',
@@ -125,6 +126,22 @@ module.exports = defineConfig([
           ],
         },
       ],
+
+      // No hardcoded waits in Page Objects
+      'playwright/no-wait-for-timeout': 'error',
+    },
+  },
+
+  // ── Helper files – browser action rules ──────────────────────────────────────
+  {
+    files: ['helpers/**/*.ts'],
+    plugins: { playwright },
+    rules: {
+      // No hardcoded waits in helpers
+      'playwright/no-wait-for-timeout': 'error',
+
+      // Prefer web-first assertions in helpers (they contain allure step assertions)
+      'playwright/prefer-web-first-assertions': 'error',
     },
   },
 
