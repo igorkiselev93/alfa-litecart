@@ -62,8 +62,8 @@ TC-1 and TC-2 register a unique Faker user per run — isolated empty cart, safe
 
 ## Prerequisites
 
-- Node.js 18+
-- Google Chrome installed at `C:\Program Files\Google\Chrome\Application\chrome.exe`
+- Node.js 20+
+- Google Chrome installed (any standard installation path)
 - Java 8+ (required by Allure CLI, bundled via `allure-commandline`)
 
 ## Setup
