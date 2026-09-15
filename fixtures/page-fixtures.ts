@@ -16,7 +16,7 @@ type MyFixtures = {
    * Each test gets its own isolated account with an empty cart.
    * Safe for parallel execution.
    */
-  authedRegisteredPage: HomePage;
+  loggedInHomePage: HomePage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -35,7 +35,7 @@ export const test = base.extend<MyFixtures>({
 
   // Registers + logs in a fresh isolated Faker user per test.
   // Guarantees an empty cart and no shared state — safe for parallel runs.
-  authedRegisteredPage: async ({ page }, use) => {
+  loggedInHomePage: async ({ page }, use) => {
     const createAccountPage = new CreateAccountPage(page);
 
     const user: UserData = {

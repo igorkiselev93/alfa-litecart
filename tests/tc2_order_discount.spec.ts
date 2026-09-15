@@ -9,7 +9,7 @@ const QUANTITY = 2;
 
 test.describe('TC-2: Discounted product order (authorized user)', () => {
   test('should successfully place an order for 2 units at a sale price', async ({
-    authedRegisteredPage,
+    loggedInHomePage,
     productPage,
     cartPage,
   }) => {
@@ -18,7 +18,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
     await allure.story('Authorized user orders sale product');
 
     await allure.step('Step 1: Register new user, verify login and empty cart', async () => {
-      await expect(authedRegisteredPage.isLoggedIn()).toBeVisible();
+      await expect(loggedInHomePage.isLoggedIn()).toBeVisible();
       expect(await cartPage.header.getCartItemCount()).toBe(0);
     });
 
