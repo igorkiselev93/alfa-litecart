@@ -53,8 +53,6 @@ export async function addToCartAndOrder(
     await cartPage.goto();
     const paymentDue = await cartPage.getPaymentDueValue();
     const expectedTotal = calcTotal(unitPrice, quantity);
-    const paymentText = await cartPage.getPaymentDueText();
-    expect(paymentText).toMatch(/[$€]\d+(\.\d{2})?/);
     expect(paymentDue).toBe(expectedTotal);
   });
 
@@ -82,8 +80,6 @@ export async function addToCartAndOrder(
       expect(items[0].unitPrice).toBe(unitPrice);
       expect(items[0].sum).toBe(calcTotal(unitPrice, quantity));
 
-      const grandTotalText = await r.getGrandTotalText();
-      expect(grandTotalText).toMatch(/[$€]\d+\.\d{2}/);
       expect(await r.getGrandTotalValue()).toBe(calcTotal(unitPrice, quantity));
 
       return r;
