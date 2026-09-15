@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
-import { requireText } from '../utils/element-utils';
+import { requireNonEmptyText } from '../utils/element-utils';
 
 export class OrderReceiptPage extends TransientPage {
   readonly orderNumberText: Locator;
@@ -24,11 +24,11 @@ export class OrderReceiptPage extends TransientPage {
 
   /** Returns the order number string, e.g. "Order #714" */
   async getOrderNumber(): Promise<string> {
-    return requireText(this.orderNumberText);
+    return requireNonEmptyText(this.orderNumberText);
   }
 
   async getGrandTotalText(): Promise<string> {
-    return requireText(this.grandTotal);
+    return requireNonEmptyText(this.grandTotal);
   }
 
   async getGrandTotalValue(): Promise<number> {
@@ -44,11 +44,11 @@ export class OrderReceiptPage extends TransientPage {
     for (let i = 0; i < count; i++) {
       const row = this.orderItemRows.nth(i);
       const cells = row.locator('td');
-      const qty = parseInt(await requireText(cells.nth(0)), 10);
-      const item = (await requireText(cells.nth(1))).trim();
-      const sku = (await requireText(cells.nth(2))).trim();
-      const unitPrice = parseCurrencyAmount(await requireText(cells.nth(3)));
-      const sum = parseCurrencyAmount(await requireText(cells.nth(5)));
+      const qty = parseInt(await requireNonEmptyText(cells.nth(0)), 10);
+      const item = (await requireNonEmptyText(cells.nth(1))).trim();
+      const sku = (await requireNonEmptyText(cells.nth(2))).trim();
+      const unitPrice = parseCurrencyAmount(await requireNonEmptyText(cells.nth(3)));
+      const sum = parseCurrencyAmount(await requireNonEmptyText(cells.nth(5)));
       items.push({ qty, item, sku, unitPrice, sum });
     }
     return items;

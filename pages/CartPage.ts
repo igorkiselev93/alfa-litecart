@@ -3,7 +3,7 @@ import { NavigablePage } from './NavigablePage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { OrderSuccessPage } from './OrderSuccessPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
-import { requireText } from '../utils/element-utils';
+import { requireNonEmptyText } from '../utils/element-utils';
 import { LOCALE } from '../config/locale';
 
 export class CartPage extends NavigablePage {
@@ -32,7 +32,7 @@ export class CartPage extends NavigablePage {
   }
 
   async getPaymentDueText(): Promise<string> {
-    return requireText(this.paymentDueRow);
+    return requireNonEmptyText(this.paymentDueRow);
   }
 
   async getPaymentDueValue(): Promise<number> {

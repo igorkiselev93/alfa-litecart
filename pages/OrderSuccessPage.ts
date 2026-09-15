@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { OrderReceiptPage } from './OrderReceiptPage';
-import { requireAttribute } from '../utils/element-utils';
+import { requireNonEmptyAttribute } from '../utils/element-utils';
 
 export class OrderSuccessPage extends TransientPage {
   readonly successHeading: Locator;
@@ -18,7 +18,7 @@ export class OrderSuccessPage extends TransientPage {
   /** Extracts the printable order copy URL from the order_success page */
   async getPrintableOrderUrl(): Promise<string> {
     const link = this.page.locator('a[href*="printable_order_copy"]');
-    return requireAttribute(link, 'href');
+    return requireNonEmptyAttribute(link, 'href');
   }
 
   /**
