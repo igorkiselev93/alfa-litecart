@@ -4,6 +4,7 @@ import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
 import { OrderSuccessPage } from '../pages/OrderSuccessPage';
 import { OrderReceiptPage } from '../pages/OrderReceiptPage';
+import { calcTotal } from '../utils/price-utils';
 
 export interface OrderResult {
   orderSuccess: OrderSuccessPage;
@@ -48,7 +49,7 @@ export async function addToCartAndOrder(
   await allure.step('Step 4: Navigate to cart and verify order total', async () => {
     await cartPage.goto();
     const paymentDue = await cartPage.getPaymentDueValue();
-    const expectedTotal = unitPrice * quantity;
+    const expectedTotal = calcTotal(unitPrice, quantity);
     const paymentText = await cartPage.getPaymentDueText();
     expect(paymentText).toMatch(/[$€]\d+(\.\d{2})?/);
     expect(paymentDue).toBe(expectedTotal);
@@ -75,11 +76,11 @@ export async function addToCartAndOrder(
     expect(items[0].item).toContain(productName);
     expect(items[0].qty).toBe(quantity);
     expect(items[0].unitPrice).toBe(unitPrice);
-    expect(items[0].sum).toBe(unitPrice * quantity);
+    expect(items[0].sum).toBe(calcTotal(unitPrice, quantity));
 
     const grandTotalText = await receipt.getGrandTotalText();
     expect(grandTotalText).toMatch(/[$€]\d+\.\d{2}/);
-    expect(await receipt.getGrandTotalValue()).toBe(unitPrice * quantity);
+    expect(await receipt.getGrandTotalValue()).toBe(calcTotal(unitPrice, quantity));
   });
 
   return { orderSuccess, receipt };

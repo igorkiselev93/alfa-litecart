@@ -22,3 +22,12 @@ export function parseCurrencyAmount(text: string): number {
   const normalized = match[1].replace(/,/g, '');
   return parseFloat(normalized);
 }
+
+/**
+ * Multiplies a unit price by quantity and rounds to 2 decimal places.
+ * Use this instead of raw multiplication when comparing monetary totals,
+ * to avoid floating-point precision errors (e.g. 19.9 * 3 = 59.699999999999996).
+ */
+export function calcTotal(unitPrice: number, quantity: number): number {
+  return Math.round(unitPrice * quantity * 100) / 100;
+}
