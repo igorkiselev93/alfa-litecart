@@ -41,9 +41,9 @@ export class CreateAccountPage extends NavigablePage {
     this.countrySelect = page.locator('select[name="country_code"]');
     this.zoneSelect = page.locator('select[name="zone_code"]:not([type="hidden"])');
     this.emailInput = page.locator('input[name="email"]');
-    this.phoneInput = page.locator('xpath=//input[@name="phone"]');
+    this.phoneInput = page.locator('input[name="phone"]');
     this.passwordInput = page.locator('input[name="password"]');
-    this.confirmPasswordInput = page.locator('xpath=//input[@name="confirmed_password"]');
+    this.confirmPasswordInput = page.locator('input[name="confirmed_password"]');
     this.createAccountBtn = page.locator('button[name="create_account"]');
   }
 

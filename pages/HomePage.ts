@@ -19,7 +19,7 @@ export class HomePage extends NavigablePage {
 
   /** Find a product card link by its exact name */
   getProductLink(name: string): Locator {
-    return this.page.getByRole('link', { name: new RegExp(name, 'i') }).first();
+    return this.page.getByRole('link', { name, exact: true }).first();
   }
 
   /** Returns locator for campaign/sale product (has "Sale" badge) */
