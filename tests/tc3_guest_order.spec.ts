@@ -47,9 +47,9 @@ test.describe('TC-3: Guest checkout', () => {
       await homePage.goto();
       const recentCount = await homePage.getRecentlyViewedCount();
       expect(recentCount).toBeGreaterThan(0);
-      const product1InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_1_NAME);
-      const product2InRecent = await homePage.isProductInRecentlyViewed(PRODUCT_2_NAME);
-      expect(product1InRecent || product2InRecent).toBe(true);
+      // Both visited products must appear in the Recently Viewed block
+      await expect(homePage.getRecentlyViewedItem(PRODUCT_1_NAME)).toBeVisible();
+      await expect(homePage.getRecentlyViewedItem(PRODUCT_2_NAME)).toBeVisible();
     });
   });
 });

@@ -33,15 +33,9 @@ export class HomePage extends NavigablePage {
     return this.recentlyViewedItems.count();
   }
 
-  async isProductInRecentlyViewed(name: string): Promise<boolean> {
-    const items = this.recentlyViewedItems;
-    const count = await items.count();
-    // Recently Viewed items contain only an image link — match by href slug
+  /** Returns a locator for a specific product in the Recently Viewed block, matched by URL slug */
+  getRecentlyViewedItem(name: string): Locator {
     const slug = name.toLowerCase().replace(/\s+/g, '-');
-    for (let i = 0; i < count; i++) {
-      const href = await items.nth(i).locator('a').getAttribute('href');
-      if (href?.includes(slug)) return true;
-    }
-    return false;
+    return this.recentlyViewedItems.locator(`a[href*="${slug}"]`);
   }
 }
