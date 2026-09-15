@@ -59,10 +59,9 @@ export class ProductPage extends TransientPage {
     return parseCurrencyAmount(await this.getPriceText());
   }
 
-  /** Select size if the product has a required size dropdown */
+  /** Selects the given size option if the size dropdown is present on this product page */
   async selectSizeIfPresent(size = 'Small'): Promise<void> {
-    const isVisible = await this.sizeSelect.isVisible().catch(() => false);
-    if (isVisible) {
+    if (await this.sizeSelect.isVisible()) {
       await this.sizeSelect.selectOption({ value: size });
     }
   }
