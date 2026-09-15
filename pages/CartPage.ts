@@ -54,8 +54,8 @@ export class CartPage extends NavigablePage {
     );
   }
 
-  /** Check guest checkout: first name field should be empty */
-  async isGuestCheckout(): Promise<boolean> {
+  /** Returns true if the customer first name field is empty — indicates guest (not logged-in) checkout */
+  async isFirstNameEmpty(): Promise<boolean> {
     const value = await this.customerFirstNameInput.inputValue();
     return value.trim() === '';
   }

@@ -42,9 +42,8 @@ test.describe('TC-3: Guest checkout', () => {
       expect(total).toBe(sumPrices(price1, price2));
     });
 
-    await allure.step('Step 4: Verify customer fields are empty (guest mode)', async () => {
-      const isGuest = await cartPage.isGuestCheckout();
-      expect(isGuest).toBe(true);
+    await allure.step('Step 4: Verify first name field is empty (not pre-filled for guest)', async () => {
+      expect(await cartPage.isFirstNameEmpty()).toBe(true);
     });
 
     await allure.step('Step 5: Return to home page and verify Recently Viewed block', async () => {
