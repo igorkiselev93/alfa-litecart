@@ -17,13 +17,10 @@ test.describe('TC-1: Regular product order (authorized user)', () => {
     await allure.feature('TC-1: Regular product order');
     await allure.story('Authorized user orders regular product');
 
-    await allure.step(
-      'Step 1: Register new user, verify login and empty cart',
-      async () => {
-        await expect(authedRegisteredPage.isLoggedIn()).toBeVisible();
-        expect(await cartPage.header.getCartItemCount()).toBe(0);
-      },
-    );
+    await allure.step('Step 1: Register new user, verify login and empty cart', async () => {
+      await expect(authedRegisteredPage.isLoggedIn()).toBeVisible();
+      expect(await cartPage.header.getCartItemCount()).toBe(0);
+    });
 
     let unitPrice = 0;
     await allure.step(`Step 2: Open product page "${PRODUCT_NAME}"`, async () => {

@@ -44,7 +44,10 @@ export async function requireAttribute(locator: Locator, attribute: string): Pro
  * Throws if the attribute is missing or blank/whitespace-only.
  * Use for required values like href links.
  */
-export async function requireNonEmptyAttribute(locator: Locator, attribute: string): Promise<string> {
+export async function requireNonEmptyAttribute(
+  locator: Locator,
+  attribute: string,
+): Promise<string> {
   const value = await locator.getAttribute(attribute);
   if (value === null || value.trim() === '') {
     throw new Error(`Attribute "${attribute}" is missing or empty on element: ${locator}`);

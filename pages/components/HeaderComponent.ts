@@ -12,9 +12,7 @@ export class HeaderComponent extends BaseComponent {
   async getCartText(): Promise<string> {
     const text = await this.cartLink.textContent();
     if (text === null) {
-      throw new Error(
-        'Cart link element found but returned no text content.'
-      );
+      throw new Error('Cart link element found but returned no text content.');
     }
     return text;
   }
@@ -24,9 +22,7 @@ export class HeaderComponent extends BaseComponent {
     // Parse "Cart: 3 item(s) - $60" → 3
     const match = text.match(/(\d+)\s+item/);
     if (!match) {
-      throw new Error(
-        `Failed to parse item count from cart text: "${text}"`
-      );
+      throw new Error(`Failed to parse item count from cart text: "${text}"`);
     }
     return parseInt(match[1], 10);
   }
@@ -36,9 +32,7 @@ export class HeaderComponent extends BaseComponent {
     // Parse "Cart: 3 item(s) - $59.99" → 59.99
     const match = text.match(/- [$€](\d+(?:\.\d+)?)/);
     if (!match) {
-      throw new Error(
-        `Failed to parse total price from cart text: "${text}"`
-      );
+      throw new Error(`Failed to parse total price from cart text: "${text}"`);
     }
     return parseFloat(match[1]);
   }

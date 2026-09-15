@@ -14,7 +14,8 @@
     "report:generate": "npx allure generate allure-results --clean -o allure-report",
     "report:open": "npx allure open allure-report",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
