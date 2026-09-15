@@ -11,7 +11,6 @@ type MyFixtures = {
   homePage: HomePage;
   productPage: ProductPage;
   cartPage: CartPage;
-  createAccountPage: CreateAccountPage;
   /**
    * Registers a fresh Faker user, logs them in, and returns HomePage.
    * Each test gets its own isolated account with an empty cart.
@@ -32,9 +31,6 @@ export const test = base.extend<MyFixtures>({
   },
   cartPage: async ({ page }, use) => {
     await use(new CartPage(page));
-  },
-  createAccountPage: async ({ page }, use) => {
-    await use(new CreateAccountPage(page));
   },
 
   // Registers + logs in a fresh isolated Faker user per test.

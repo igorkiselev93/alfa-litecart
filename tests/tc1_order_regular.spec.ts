@@ -19,7 +19,7 @@ test.describe('TC-1: Regular product order (authorized user)', () => {
 
     await allure.step('Step 1: Register new user, verify login and empty cart', async () => {
       await expect(authedRegisteredPage.isLoggedIn()).toBeVisible();
-      expect(await cartPage.header.getCartItemCount()).toBe(0);
+      expect(await authedRegisteredPage.header.getCartItemCount()).toBe(0);
     });
 
     // Step 2: Navigate to product and get regular price
