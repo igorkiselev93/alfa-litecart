@@ -7,8 +7,8 @@ import { OrderReceiptPage } from '../pages/OrderReceiptPage';
 import { calcTotal } from '../utils/price-utils';
 
 export interface OrderResult {
-  orderSuccess: OrderSuccessPage;
-  receipt: OrderReceiptPage;
+  orderSuccessPage: OrderSuccessPage;
+  orderReceiptPage: OrderReceiptPage;
 }
 
 /**
@@ -56,8 +56,8 @@ export async function addToCartAndOrder(
     expect(paymentDue).toBe(expectedTotal);
   });
 
-  const orderSuccess = await allure.step('Step 5: Confirm order', async () => {
-    const success = await cartPage.confirmOrder();
+  const orderSuccessPage = await allure.step('Step 5: Confirm order', async () => {
+    const success: OrderSuccessPage = await cartPage.confirmOrder();
     expect(await success.isOrderConfirmed()).toBe(true);
     await expect(success.successHeading).toContainText('successfully completed', {
       ignoreCase: true,
@@ -65,26 +65,26 @@ export async function addToCartAndOrder(
     return success;
   });
 
-  const receipt = await allure.step(
+  const orderReceiptPage = await allure.step(
     'Step 6: Open printable receipt and verify order details',
     async () => {
-      const r = await orderSuccess.openOrderReceipt();
+      const receipt: OrderReceiptPage = await orderSuccessPage.openOrderReceipt();
 
-      const orderNum = await r.getOrderNumber();
+      const orderNum = await receipt.getOrderNumber();
       expect(orderNum).toMatch(/order\s*#\d+/i);
 
-      const items = await r.getOrderItems();
+      const items = await receipt.getOrderItems();
       expect(items).toHaveLength(1);
       expect(items[0].item).toContain(productName);
       expect(items[0].qty).toBe(quantity);
       expect(items[0].unitPrice).toBe(unitPrice);
       expect(items[0].sum).toBe(calcTotal(unitPrice, quantity));
 
-      expect(await r.getGrandTotalValue()).toBe(calcTotal(unitPrice, quantity));
+      expect(await receipt.getGrandTotalValue()).toBe(calcTotal(unitPrice, quantity));
 
-      return r;
+      return receipt;
     },
   );
 
-  return { orderSuccess, receipt };
+  return { orderSuccessPage, orderReceiptPage };
 }
