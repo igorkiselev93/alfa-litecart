@@ -17,14 +17,14 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
     await allure.feature('TC-2: Discounted product order');
     await allure.story('Authorized user orders sale product');
 
-    await allure.step('Step 1: Register new user, verify login and empty cart', async () => {
+    await allure.step('Precondition: Register new user, verify login and empty cart', async () => {
       await expect(loggedInHomePage.sideMenu.isLoggedIn()).toBeVisible();
       expect(await cartPage.header.getCartItemCount()).toBe(0);
     });
 
-    // Step 2: Navigate to sale product, verify discount and get sale price
+    // Step 1: Navigate to sale product, verify discount and get sale price
     const salePrice = await allure.step(
-      `Step 2: Open sale product page "${PRODUCT_NAME}" and verify discount`,
+      `Step 1: Open sale product page "${PRODUCT_NAME}" and verify discount`,
       async () => {
         await productPage.goto(PRODUCT_PATH);
         await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
@@ -41,7 +41,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
       },
     );
 
-    // Steps 3–6: Add to cart, verify total, confirm order, verify receipt
+    // Steps 2–5: Add to cart, verify total, confirm order, verify receipt
     await addToCartAndOrder(productPage, cartPage, PRODUCT_NAME, salePrice, QUANTITY);
   });
 });

@@ -19,6 +19,11 @@ test.describe('TC-3: Guest checkout', () => {
     await allure.feature('TC-3: Guest checkout');
     await allure.story('Guest user adds products and checks recently viewed');
 
+    await allure.step('Precondition: Cart is empty', async () => {
+      await homePage.goto();
+      expect(await homePage.header.getCartItemCount()).toBe(0);
+    });
+
     // Step 1: Add first product to cart
     const price1 = await allure.step(
       `Step 1: Open "${PRODUCT_1_NAME}" and add to cart`,

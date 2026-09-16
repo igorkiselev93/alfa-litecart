@@ -17,14 +17,14 @@ test.describe('TC-1: Regular product order (authorized user)', () => {
     await allure.feature('TC-1: Regular product order');
     await allure.story('Authorized user orders regular product');
 
-    await allure.step('Step 1: Register new user, verify login and empty cart', async () => {
+    await allure.step('Precondition: Register new user, verify login and empty cart', async () => {
       await expect(loggedInHomePage.sideMenu.isLoggedIn()).toBeVisible();
       expect(await loggedInHomePage.header.getCartItemCount()).toBe(0);
     });
 
-    // Step 2: Navigate to product and get regular price
+    // Step 1: Navigate to product and get regular price
     const unitPrice = await allure.step(
-      `Step 2: Open product page "${PRODUCT_NAME}"`,
+      `Step 1: Open product page "${PRODUCT_NAME}"`,
       async () => {
         await productPage.goto(PRODUCT_PATH);
         await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
@@ -35,7 +35,7 @@ test.describe('TC-1: Regular product order (authorized user)', () => {
       },
     );
 
-    // Steps 3–6: Add to cart, verify total, confirm order, verify receipt
+    // Steps 2–5: Add to cart, verify total, confirm order, verify receipt
     await addToCartAndOrder(productPage, cartPage, PRODUCT_NAME, unitPrice, QUANTITY);
   });
 });

@@ -31,7 +31,7 @@ export async function addProductToCart(
 }
 
 /**
- * Shared steps 3–6 for authorized order tests (TC-1 and TC-2).
+ * Shared steps 2–5 for authorized order tests (TC-1 and TC-2).
  * Adds product to cart, verifies total, confirms order, opens receipt.
  */
 export async function addToCartAndOrder(
@@ -41,7 +41,7 @@ export async function addToCartAndOrder(
   unitPrice: number,
   quantity: number,
 ): Promise<OrderResult> {
-  await allure.step(`Step 3: Set quantity to ${quantity} and add to cart`, async () => {
+  await allure.step(`Step 2: Set quantity to ${quantity} and add to cart`, async () => {
     await productPage.selectSizeIfPresent();
     await productPage.setQuantity(quantity);
     await productPage.addToCart(quantity);
@@ -49,14 +49,14 @@ export async function addToCartAndOrder(
     expect(cartCount).toBe(quantity);
   });
 
-  await allure.step('Step 4: Navigate to cart and verify order total', async () => {
+  await allure.step('Step 3: Navigate to cart and verify order total', async () => {
     await cartPage.goto();
     const paymentDue = await cartPage.getPaymentDueValue();
     const expectedTotal = calcTotal(unitPrice, quantity);
     expect(paymentDue).toBe(expectedTotal);
   });
 
-  const orderSuccessPage = await allure.step('Step 5: Confirm order', async () => {
+  const orderSuccessPage = await allure.step('Step 4: Confirm order', async () => {
     const success: OrderSuccessPage = await cartPage.confirmOrder();
     expect(await success.isOrderConfirmed()).toBe(true);
     await expect(success.successHeading).toContainText('successfully completed', {
@@ -66,7 +66,7 @@ export async function addToCartAndOrder(
   });
 
   const orderReceiptPage = await allure.step(
-    'Step 6: Open printable receipt and verify order details',
+    'Step 5: Open printable receipt and verify order details',
     async () => {
       const receipt: OrderReceiptPage = await orderSuccessPage.openOrderReceipt();
 
