@@ -49,11 +49,11 @@ test.describe('TC-3: Guest checkout', () => {
 
     await allure.step('Step 5: Return to home page and verify Recently Viewed block', async () => {
       await homePage.goto();
-      const recentCount = await homePage.getRecentlyViewedCount();
+      const recentCount = await homePage.sideMenu.getRecentlyViewedCount();
       expect(recentCount).toBeGreaterThan(0);
       // Both visited products must appear in the Recently Viewed block
-      await expect(homePage.getRecentlyViewedItem(PRODUCT_1_NAME)).toBeVisible();
-      await expect(homePage.getRecentlyViewedItem(PRODUCT_2_NAME)).toBeVisible();
+      await expect(homePage.sideMenu.getRecentlyViewedItem(PRODUCT_1_NAME)).toBeVisible();
+      await expect(homePage.sideMenu.getRecentlyViewedItem(PRODUCT_2_NAME)).toBeVisible();
     });
   });
 });

@@ -9,15 +9,11 @@ export class HomePage extends StaticPage {
 
   readonly header: HeaderComponent;
   readonly sideMenu: SideMenuComponent;
-  readonly recentlyViewedSection: Locator;
-  readonly recentlyViewedItems: Locator;
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
     this.sideMenu = new SideMenuComponent(page);
-    this.recentlyViewedSection = page.locator('#box-recently-viewed-products h3.title');
-    this.recentlyViewedItems = page.locator('#box-recently-viewed-products ul li');
   }
 
   /** Find a product card link by its exact name */
@@ -30,15 +26,5 @@ export class HomePage extends StaticPage {
     return this.page
       .locator(`li:has(em.sticker) a[href*="${name.toLowerCase().replace(' ', '-')}"]`)
       .first();
-  }
-
-  async getRecentlyViewedCount(): Promise<number> {
-    return this.recentlyViewedItems.count();
-  }
-
-  /** Returns a locator for a specific product in the Recently Viewed block, matched by URL slug */
-  getRecentlyViewedItem(name: string): Locator {
-    const slug = name.toLowerCase().replace(/\s+/g, '-');
-    return this.recentlyViewedItems.locator(`a[href*="${slug}"]`);
   }
 }
