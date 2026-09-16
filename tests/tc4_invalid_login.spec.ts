@@ -36,9 +36,9 @@ test.describe('TC-4: Invalid login (negative scenario)', () => {
       await expect(loginPage.errorNotice).toHaveClass(/errors/);
     });
 
-    // Step 6: Confirm user is NOT logged in
+    // Step 6: Confirm user is NOT logged in — still on /login page, no redirect occurred
     await allure.step('Step 6: Confirm user is not logged in', async () => {
-      await expect(loginPage.isLoggedIn()).toBeHidden();
+      expect(await loginPage.getCurrentUrl()).toContain('/login');
     });
   });
 });

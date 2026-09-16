@@ -1,18 +1,21 @@
 import { Page, Locator } from '@playwright/test';
 import { NavigablePage } from './NavigablePage';
 import { HeaderComponent } from './components/HeaderComponent';
+import { SideMenuComponent } from './components/SideMenuComponent';
 import { LOCALE } from '../config/locale';
 
 export class HomePage extends NavigablePage {
   protected readonly url = `/${LOCALE}/`;
 
   readonly header: HeaderComponent;
+  readonly sideMenu: SideMenuComponent;
   readonly recentlyViewedSection: Locator;
   readonly recentlyViewedItems: Locator;
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
+    this.sideMenu = new SideMenuComponent(page);
     this.recentlyViewedSection = page.locator('#box-recently-viewed-products h3.title');
     this.recentlyViewedItems = page.locator('#box-recently-viewed-products ul li');
   }

@@ -4,46 +4,47 @@ Automated E2E test suite for [litecart.stqa.ru](https://litecart.stqa.ru) built 
 
 ## Stack
 
-| Tool                                 | Version        | Purpose            |
-| ------------------------------------ | -------------- | ------------------ |
-| [Playwright](https://playwright.dev) | 1.63           | Browser automation |
-| TypeScript                           | 5.7.3 (strict) | Type safety        |
-| [Allure](https://allurereport.org)   | 3.x            | Test reporting     |
-| [Faker.js](https://fakerjs.dev)      | 9.x            | Dynamic test data  |
-| ESLint + eslint-plugin-playwright    | 9.x / 2.x      | Code quality       |
-| Prettier                             | 3.x            | Code formatting    |
+| Tool | Version | Purpose |
+|------|---------|---------|
+| [Playwright](https://playwright.dev) | 1.63 | Browser automation |
+| TypeScript | 5.7.3 (strict) | Type safety |
+| [Allure](https://allurereport.org) | 3.x | Test reporting |
+| [Faker.js](https://fakerjs.dev) | 9.x | Dynamic test data |
+| ESLint + eslint-plugin-playwright | 9.x / 2.x | Code quality |
+| Prettier | 3.x | Code formatting |
 
 ## Project Structure
 
 ```
 ├── config/
-│   └── locale.ts                   # LOCALE env variable for multi-language support
+│   └── locale.ts                   # LOCALE env variable (URL prefix only)
 ├── fixtures/
-│   └── page-fixtures.ts            # Playwright fixtures (pages + authedRegisteredPage)
+│   └── page-fixtures.ts            # Playwright fixtures (pages + loggedInHomePage)
 ├── helpers/
 │   └── order-helpers.ts            # Shared step helpers for order tests
 ├── pages/                          # Page Object Model
-│   ├── BasePage.ts                 # Abstract base: isLoggedIn, getTitle, waitForLogin…
-│   ├── NavigablePage.ts            # Base for pages with a fixed URL (goto())
-│   ├── TransientPage.ts            # Base for pages reached via navigation/redirect
-│   ├── HomePage.ts
+│   ├── BasePage.ts                 # Abstract base: getCurrentUrl, getTitle
+│   ├── NavigablePage.ts            # Base for pages with a fixed URL + goto()
+│   ├── TransientPage.ts            # Base for pages reached via redirect or action
+│   ├── HomePage.ts                 # sideMenu, header, recentlyViewed
 │   ├── LoginPage.ts
-│   ├── CartPage.ts
+│   ├── CartPage.ts                 # header
 │   ├── CreateAccountPage.ts
-│   ├── ProductPage.ts
+│   ├── ProductPage.ts              # sideMenu, header
 │   ├── OrderSuccessPage.ts
 │   ├── OrderReceiptPage.ts
 │   └── components/
 │       ├── BaseComponent.ts        # Abstract base with root Locator isolation
-│       └── HeaderComponent.ts      # Header cart info and navigation
+│       ├── HeaderComponent.ts      # Cart count, total, navigation (#header)
+│       └── SideMenuComponent.ts   # Login state, categories (aside#navigation)
 ├── tests/
 │   ├── tc1_order_regular.spec.ts
 │   ├── tc2_order_discount.spec.ts
 │   ├── tc3_guest_order.spec.ts
 │   └── tc4_invalid_login.spec.ts
 ├── utils/
-│   ├── price-utils.ts              # parseCurrencyAmount() — supports $ and €
-│   └── element-utils.ts            # requireText() / requireAttribute() — fail-fast helpers
+│   ├── price-utils.ts              # parseCurrencyAmount(), calcTotal(), sumPrices()
+│   └── element-utils.ts            # requireText() / requireNonEmptyText() — fail-fast helpers
 ├── playwright.config.ts
 ├── tsconfig.json
 └── eslint.config.js
@@ -52,7 +53,7 @@ Automated E2E test suite for [litecart.stqa.ru](https://litecart.stqa.ru) built 
 ## Test Cases
 
 | ID   | Scenario                            | Auth         | Parallel |
-| ---- | ----------------------------------- | ------------ | -------- |
+|------|-------------------------------------|--------------|----------|
 | TC-1 | Order regular-price product (qty 3) | Fresh user   | ✅ Safe  |
 | TC-2 | Order discounted product (qty 2)    | Fresh user   | ✅ Safe  |
 | TC-3 | Guest checkout + Recently Viewed    | None (guest) | ✅ Safe  |
@@ -123,7 +124,8 @@ npm run report:open
 
 ```bash
 npm run lint
-npm run format
+npm run format:check   # non-mutating check (use in CI)
+npm run format         # auto-fix formatting
 ```
 
 ## Architecture
@@ -131,28 +133,42 @@ npm run format
 ### Page Object Hierarchy
 
 ```
-BasePage (abstract)               — common: isLoggedIn, getTitle, waitForLoginConfirmation
-  ├── NavigablePage (abstract)    — adds: abstract url, goto()
-  │     ├── HomePage
+BasePage (abstract)               — getCurrentUrl, getTitle
+  ├── NavigablePage (abstract)    — abstract url, goto()
+  │     ├── HomePage              — header, sideMenu, recentlyViewed
   │     ├── LoginPage
-  │     ├── CartPage
+  │     ├── CartPage              — header
   │     └── CreateAccountPage
-  └── TransientPage (abstract)    — no url, no goto() — reached via redirect or action
-        ├── ProductPage           — gotoProduct(path)
+  └── TransientPage (abstract)    — no url, no goto()
+        ├── ProductPage           — header, sideMenu; gotoProduct(path)
         ├── OrderSuccessPage      — returned by CartPage.confirmOrder()
         └── OrderReceiptPage      — returned by OrderSuccessPage.openOrderReceipt()
 
 BaseComponent (abstract)          — root: Locator (scoped DOM area)
-  └── HeaderComponent             — cart count, total, navigation
+  ├── HeaderComponent             — #header → cart count, total, openCart()
+  └── SideMenuComponent           — aside#navigation → isLoggedIn(), waitForLoginConfirmation()
 ```
+
+### Which pages have which components
+
+| Page | `header` | `sideMenu` |
+|---|---|---|
+| HomePage | ✅ | ✅ |
+| ProductPage | ✅ | ✅ |
+| CartPage | ✅ | ❌ |
+| LoginPage | ❌ | ❌ |
+| CreateAccountPage | ❌ | ❌ |
+| OrderSuccessPage | ❌ | ❌ |
+| OrderReceiptPage | ❌ | ❌ |
 
 ### Key Design Decisions
 
 - **Page Object Model** — locators and actions fully encapsulated; tests never access `page` directly
-- **Component isolation** — `HeaderComponent` is scoped to `#header` root locator, reused across `ProductPage` and `CartPage`
-- **Fail-fast helpers** — `requireText()` and `requireAttribute()` throw descriptive errors instead of returning empty strings
-- **Network-based waiting** — `addToCart()` uses `page.waitForResponse()` on `/ajax/cart.json` POST instead of polling or hardcoded waits
+- **Component isolation** — `HeaderComponent` scoped to `#header`, `SideMenuComponent` scoped to `aside#navigation`; added only to pages where the element exists in DOM
+- **Fail-fast helpers** — `requireNonEmptyText()` and `requireNonEmptyAttribute()` throw on null or blank values instead of silently returning empty strings
+- **UI-based cart waiting** — `addToCart()` clicks the button then waits for `a.content:has-text("N item")` to appear using Playwright auto-waiting — no polling, no hardcoded waits
 - **Shared helpers** — `addToCartAndOrder()` and `addProductToCart()` in `helpers/order-helpers.ts` eliminate step duplication between TC-1, TC-2 and TC-3
-- **Currency-agnostic parsing** — `parseCurrencyAmount()` handles both `$` and `€`
+- **Currency-agnostic parsing** — `parseCurrencyAmount()` handles `$` and `€`, throws on unrecognised format
+- **Floating-point safe totals** — `calcTotal()` and `sumPrices()` round to 2 decimal places
 - **No `expect` in Page Objects** — enforced via ESLint `no-restricted-imports` rule
 - **Order receipt** — navigated to directly via extracted `href` to avoid Fancybox iframe and `window.print()` dialog

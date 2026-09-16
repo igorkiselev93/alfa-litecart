@@ -18,7 +18,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
     await allure.story('Authorized user orders sale product');
 
     await allure.step('Step 1: Register new user, verify login and empty cart', async () => {
-      await expect(loggedInHomePage.isLoggedIn()).toBeVisible();
+      await expect(loggedInHomePage.sideMenu.isLoggedIn()).toBeVisible();
       expect(await cartPage.header.getCartItemCount()).toBe(0);
     });
 

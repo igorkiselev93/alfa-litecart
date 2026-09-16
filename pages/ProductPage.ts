@@ -1,11 +1,13 @@
 import { Page, Locator } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { HeaderComponent } from './components/HeaderComponent';
+import { SideMenuComponent } from './components/SideMenuComponent';
 import { parseCurrencyAmount } from '../utils/price-utils';
 import { requireNonEmptyText } from '../utils/element-utils';
 
 export class ProductPage extends TransientPage {
   readonly header: HeaderComponent;
+  readonly sideMenu: SideMenuComponent;
   readonly productTitle: Locator;
   readonly regularPrice: Locator;
   readonly salePrice: Locator;
@@ -17,6 +19,7 @@ export class ProductPage extends TransientPage {
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
+    this.sideMenu = new SideMenuComponent(page);
     this.productTitle = page.locator('h1[itemprop="name"]');
     // Price wrapper scoped to the product box (not related-products widgets)
     this.regularPrice = page.locator('#box-product .price-wrapper');

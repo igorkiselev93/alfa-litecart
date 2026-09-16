@@ -53,10 +53,13 @@ export const test = base.extend<MyFixtures>({
 
     await createAccountPage.goto();
     await createAccountPage.registerUser(user);
-    // LiteCart auto-logs in after registration — wait via Page Object
-    await createAccountPage.waitForLoginConfirmation();
 
-    await use(new HomePage(page));
+    // LiteCart auto-logs in and redirects to HomePage after registration
+    // Wait via HomePage.sideMenu — aside#navigation is present there
+    const homePage = new HomePage(page);
+    await homePage.sideMenu.waitForLoginConfirmation();
+
+    await use(homePage);
   },
 });
 
