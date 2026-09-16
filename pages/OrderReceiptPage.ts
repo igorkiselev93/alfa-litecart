@@ -3,10 +3,32 @@ import { TransientPage } from './TransientPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
 import { requireNonEmptyText } from '../utils/element-utils';
 
+/**
+ * Column indices in the order items table:
+ * Qty | Item | SKU | Unit Price | Tax | Sum
+ */
+const COL = {
+  QTY: 0,
+  ITEM: 1,
+  SKU: 2,
+  UNIT_PRICE: 3,
+  TAX: 4,
+  SUM: 5,
+} as const;
+
+export interface OrderLineItem {
+  qty: number;
+  item: string;
+  sku: string;
+  unitPrice: number;
+  sum: number;
+}
+
 export class OrderReceiptPage extends TransientPage {
   readonly orderNumberText: Locator;
   readonly grandTotal: Locator;
-  readonly orderItemRows: Locator;
+  /** Data rows in the items table — skipping the header row (first tr in tbody) */
+  private readonly orderItemRows: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -18,8 +40,8 @@ export class OrderReceiptPage extends TransientPage {
     this.grandTotal = page.locator(
       'xpath=//td[.//strong[text()="Grand Total"]]/following-sibling::td//strong',
     );
-    // Data rows in the items table (skip header row)
-    this.orderItemRows = page.locator('xpath=//table[.//th[text()="Item"]]//tr[not(.//th)]');
+    // Items table has id="items" — skip first tr (header row) via :not(:first-child)
+    this.orderItemRows = page.locator('table#items tbody tr:not(:first-child)');
   }
 
   /** Returns the order number string, e.g. "Order #714" */
@@ -35,22 +57,22 @@ export class OrderReceiptPage extends TransientPage {
     return parseCurrencyAmount(await this.getGrandTotalText());
   }
 
-  /** Returns all item rows as parsed objects */
-  async getOrderItems(): Promise<
-    Array<{ qty: number; item: string; sku: string; unitPrice: number; sum: number }>
-  > {
+  /** Returns all order line items as typed objects */
+  async getOrderItems(): Promise<OrderLineItem[]> {
     const count = await this.orderItemRows.count();
-    const items = [];
+    const items: OrderLineItem[] = [];
+
     for (let i = 0; i < count; i++) {
-      const row = this.orderItemRows.nth(i);
-      const cells = row.locator('td');
-      const qty = parseInt(await requireNonEmptyText(cells.nth(0)), 10);
-      const item = (await requireNonEmptyText(cells.nth(1))).trim();
-      const sku = (await requireNonEmptyText(cells.nth(2))).trim();
-      const unitPrice = parseCurrencyAmount(await requireNonEmptyText(cells.nth(3)));
-      const sum = parseCurrencyAmount(await requireNonEmptyText(cells.nth(5)));
-      items.push({ qty, item, sku, unitPrice, sum });
+      const cells = this.orderItemRows.nth(i).locator('td');
+      items.push({
+        qty: parseInt(await requireNonEmptyText(cells.nth(COL.QTY)), 10),
+        item: (await requireNonEmptyText(cells.nth(COL.ITEM))).trim(),
+        sku: (await requireNonEmptyText(cells.nth(COL.SKU))).trim(),
+        unitPrice: parseCurrencyAmount(await requireNonEmptyText(cells.nth(COL.UNIT_PRICE))),
+        sum: parseCurrencyAmount(await requireNonEmptyText(cells.nth(COL.SUM))),
+      });
     }
+
     return items;
   }
 }

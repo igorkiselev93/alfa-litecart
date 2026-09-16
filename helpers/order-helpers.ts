@@ -3,7 +3,7 @@ import * as allure from 'allure-js-commons';
 import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
 import { OrderSuccessPage } from '../pages/OrderSuccessPage';
-import { OrderReceiptPage } from '../pages/OrderReceiptPage';
+import { OrderReceiptPage, OrderLineItem } from '../pages/OrderReceiptPage';
 import { calcTotal } from '../utils/price-utils';
 
 export interface OrderResult {
@@ -73,7 +73,7 @@ export async function addToCartAndOrder(
       const orderNum = await receipt.getOrderNumber();
       expect(orderNum).toMatch(/order\s*#\d+/i);
 
-      const items = await receipt.getOrderItems();
+      const items: OrderLineItem[] = await receipt.getOrderItems();
       expect(items).toHaveLength(1);
       expect(items[0].item).toContain(productName);
       expect(items[0].qty).toBe(quantity);
