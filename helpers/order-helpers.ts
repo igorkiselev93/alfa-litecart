@@ -12,8 +12,8 @@ export interface OrderResult {
 }
 
 /**
- * Navigates to a product page, verifies the title, adds it to the cart,
- * and returns the unit price read from the product page.
+ * Navigates to product page and adds it to the cart,
+ * and returns the unit price.
  */
 export async function addProductToCart(
   productPage: ProductPage,
@@ -31,7 +31,6 @@ export async function addProductToCart(
 }
 
 /**
- * Shared steps 2–5 for authorized order tests (TC-1 and TC-2).
  * Adds product to cart, verifies total, confirms order, opens receipt.
  */
 export async function addToCartAndOrder(

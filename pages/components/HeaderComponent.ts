@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+﻿import { Page, Locator } from '@playwright/test';
 import { BaseComponent } from './BaseComponent';
 
 export class HeaderComponent extends BaseComponent {
@@ -42,16 +42,15 @@ export class HeaderComponent extends BaseComponent {
   }
 
   /**
-   * Returns a locator that matches the cart link when it contains exactly `count` items.
+   * Matches the cart link when it contains exactly `count` items.
    * Uses Playwright's built-in auto-waiting via waitFor({ state: 'visible' }).
-   * Safe to use in Page Objects — does not use expect().
    */
   cartLinkWithCount(count: number): Locator {
     return this.root.locator(`a.content:has-text("${count} item")`);
   }
 
   /** Waits until the cart header shows the expected item count */
-  async waitForCartCount(count: number, timeout = 15_000): Promise<void> {
+  async waitForCartCount(count: number, timeout = 10_000): Promise<void> {
     await this.cartLinkWithCount(count).waitFor({ state: 'visible', timeout });
   }
 }

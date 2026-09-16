@@ -11,7 +11,6 @@ export class SideMenuComponent extends BaseComponent {
     this.recentlyViewedItems = this.root.locator('#box-recently-viewed-products ul li');
   }
 
-  /** Returns the logout link locator — visible when user is authenticated */
   isLoggedIn(): Locator {
     return this.logoutLink;
   }
@@ -21,7 +20,6 @@ export class SideMenuComponent extends BaseComponent {
     await this.logoutLink.waitFor({ state: 'visible', timeout });
   }
 
-  /** Returns the count of items in the Recently Viewed block */
   async getRecentlyViewedCount(): Promise<number> {
     return this.recentlyViewedItems.count();
   }

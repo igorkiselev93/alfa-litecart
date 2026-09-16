@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+﻿import { Page } from '@playwright/test';
 
 export abstract class BasePage {
   constructor(readonly page: Page) {}
@@ -7,7 +7,6 @@ export abstract class BasePage {
     return this.page.url();
   }
 
-  /** Returns the page title (<title> tag) */
   async getTitle(): Promise<string> {
     return this.page.title();
   }

@@ -41,7 +41,7 @@ test.describe('TC-3: Guest checkout', () => {
       await expect(cartPage.getOrderSummaryRow(PRODUCT_1_NAME)).toBeVisible();
       await expect(cartPage.getOrderSummaryRow(PRODUCT_2_NAME)).toBeVisible();
       const total = await cartPage.getPaymentDueValue();
-      // Expected total derived from actual product prices — not a hardcoded magic number
+      // Expected total derived from actual product prices — not a hardcoded number
       expect(total).toBe(sumPrices(price1, price2));
     });
 

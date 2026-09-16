@@ -11,11 +11,6 @@ type MyFixtures = {
   homePage: HomePage;
   productPage: ProductPage;
   cartPage: CartPage;
-  /**
-   * Registers a fresh Faker user, logs them in, and returns HomePage.
-   * Each test gets its own isolated account with an empty cart.
-   * Safe for parallel execution.
-   */
   loggedInHomePage: HomePage;
 };
 
@@ -33,8 +28,8 @@ export const test = base.extend<MyFixtures>({
     await use(new CartPage(page));
   },
 
-  // Registers + logs in a fresh isolated Faker user per test.
-  // Guarantees an empty cart and no shared state — safe for parallel runs.
+  // Registers + logs in a fresh isolated user.
+  // Needs for parallel runs.
   loggedInHomePage: async ({ page }, use) => {
     const createAccountPage = new CreateAccountPage(page);
 
@@ -54,8 +49,7 @@ export const test = base.extend<MyFixtures>({
     await createAccountPage.goto();
     await createAccountPage.registerUser(user);
 
-    // LiteCart auto-logs in and redirects to HomePage after registration
-    // Wait via HomePage.sideMenu — aside#navigation is present there
+    // It redirects to HomePage after registration
     const homePage = new HomePage(page);
     await homePage.sideMenu.waitForLoginConfirmation();
 
