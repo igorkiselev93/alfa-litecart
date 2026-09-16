@@ -18,7 +18,7 @@ export class CartPage extends StaticPage {
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
-    this.cartItems = page.locator('#box-checkout-cart ul.items li');
+    this.cartItems = page.locator('#box-checkout-cart ul li');
     this.confirmOrderButton = page.locator('button[name="confirm_order"]');
     // XPath: payment due amount — scoped to footer row, last td strong
     this.paymentDueRow = page.locator('xpath=//tr[contains(@class,"footer")]//td[last()]//strong');
@@ -50,7 +50,7 @@ export class CartPage extends StaticPage {
   /** Check if a product name appears in the order summary table */
   getOrderSummaryRow(productName: string): Locator {
     return this.page.locator(
-      `xpath=//table[.//th[text()="Product"]]//td[contains(text(),"${productName}")]`,
+      `xpath=//td[contains(text(),"${productName}")]`,
     );
   }
 
