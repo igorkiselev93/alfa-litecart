@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures/page-fixtures';
 import * as allure from 'allure-js-commons';
 
-const ERROR_PATTERN = /wrong password|account is disabled|does not exist/i;
+const ERROR_MESSAGE = 'Wrong password or the account is disabled, or does not exist';
 
 test.describe('TC-4: Invalid login (negative scenario)', () => {
   test('should show an error message on wrong credentials', async ({ loginPage }) => {
@@ -25,15 +25,16 @@ test.describe('TC-4: Invalid login (negative scenario)', () => {
       await expect(loginPage.errorNotice).toBeVisible();
     });
 
-    // Step 4: Validate error text via RegEx
-    await allure.step('Step 4: Validate error message text via RegEx', async () => {
+    // Step 4: Validate exact error message text
+    await allure.step('Step 4: Validate error message text', async () => {
       const errorText = await loginPage.getErrorText();
-      expect(errorText).toMatch(ERROR_PATTERN);
+      expect(errorText).toBe(ERROR_MESSAGE);
     });
 
-    // Step 5: Verify error notice has error styling
-    await allure.step('Step 5: Verify error notice has error CSS class', async () => {
+    // Step 5: Verify error notice has error styling (red/pink background)
+    await allure.step('Step 5: Verify error notice has red background color', async () => {
       await expect(loginPage.errorNotice).toHaveClass(/errors/);
+      await expect(loginPage.errorNotice).toHaveCSS('background-color', 'rgb(255, 204, 204)');
     });
 
     // Step 6: Confirm user is NOT logged in — still on /login page, no redirect occurred

@@ -1,6 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { StaticPage } from './StaticPage';
-import { requireText } from '../utils/element-utils';
+import { requireNonEmptyText } from '../utils/element-utils';
 import { LOCALE } from '../config/locale';
 
 export class LoginPage extends StaticPage {
@@ -26,6 +26,6 @@ export class LoginPage extends StaticPage {
   }
 
   async getErrorText(): Promise<string> {
-    return requireText(this.errorNotice);
+    return requireNonEmptyText(this.errorNotice);
   }
 }
