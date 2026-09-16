@@ -1,11 +1,11 @@
 import { Page, Locator } from '@playwright/test';
-import { TransientPage } from './TransientPage';
+import { DynamicPage } from './DynamicPage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { SideMenuComponent } from './components/SideMenuComponent';
 import { parseCurrencyAmount } from '../utils/price-utils';
 import { requireNonEmptyText } from '../utils/element-utils';
 
-export class ProductPage extends TransientPage {
+export class ProductPage extends DynamicPage {
   readonly header: HeaderComponent;
   readonly sideMenu: SideMenuComponent;
   readonly productTitle: Locator;
@@ -32,10 +32,6 @@ export class ProductPage extends TransientPage {
     this.addToCartButton = page.locator('button[name="add_cart_product"]');
     // Size option select (some products require it)
     this.sizeSelect = page.locator('select[name="options[Size]"]');
-  }
-
-  async gotoProduct(productPath: string): Promise<void> {
-    await this.page.goto(productPath);
   }
 
   async getProductTitle(): Promise<string> {

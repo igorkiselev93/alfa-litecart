@@ -26,7 +26,7 @@ test.describe('TC-1: Regular product order (authorized user)', () => {
     const unitPrice = await allure.step(
       `Step 2: Open product page "${PRODUCT_NAME}"`,
       async () => {
-        await productPage.gotoProduct(PRODUCT_PATH);
+        await productPage.goto(PRODUCT_PATH);
         await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
         expect(await productPage.isOnSale()).toBe(false);
         const price = await productPage.getRegularPriceValue();

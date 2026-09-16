@@ -24,7 +24,8 @@ Automated E2E test suite for [litecart.stqa.ru](https://litecart.stqa.ru) built 
 │   └── order-helpers.ts            # Shared step helpers for order tests
 ├── pages/                          # Page Object Model
 │   ├── BasePage.ts                 # Abstract base: getCurrentUrl, getTitle
-│   ├── NavigablePage.ts            # Base for pages with a fixed URL + goto()
+│   ├── StaticPage.ts               # Base for pages with a fixed URL + goto()
+│   ├── DynamicPage.ts              # Base for pages with a parametric URL + goto(path)
 │   ├── TransientPage.ts            # Base for pages reached via redirect or action
 │   ├── HomePage.ts                 # sideMenu, header, recentlyViewed
 │   ├── LoginPage.ts
@@ -134,13 +135,14 @@ npm run format         # auto-fix formatting
 
 ```
 BasePage (abstract)               — getCurrentUrl, getTitle
-  ├── NavigablePage (abstract)    — abstract url, goto()
+  ├── StaticPage (abstract)       — abstract url, goto()       — fixed URL, navigate directly
   │     ├── HomePage              — header, sideMenu, recentlyViewed
   │     ├── LoginPage
   │     ├── CartPage              — header
   │     └── CreateAccountPage
-  └── TransientPage (abstract)    — no url, no goto()
-        ├── ProductPage           — header, sideMenu; gotoProduct(path)
+  ├── DynamicPage (abstract)      — goto(path: string)         — parametric URL
+  │     └── ProductPage           — header, sideMenu; goto('/en/rubber-ducks-c-1/...')
+  └── TransientPage (abstract)    — no url, no goto()          — reached via redirect only
         ├── OrderSuccessPage      — returned by CartPage.confirmOrder()
         └── OrderReceiptPage      — returned by OrderSuccessPage.openOrderReceipt()
 
@@ -164,6 +166,7 @@ BaseComponent (abstract)          — root: Locator (scoped DOM area)
 ### Key Design Decisions
 
 - **Page Object Model** — locators and actions fully encapsulated; tests never access `page` directly
+- **Three-tier page hierarchy** — `StaticPage` (fixed URL), `DynamicPage` (parametric URL), `TransientPage` (no URL — redirect only)
 - **Component isolation** — `HeaderComponent` scoped to `#header`, `SideMenuComponent` scoped to `aside#navigation`; added only to pages where the element exists in DOM
 - **Fail-fast helpers** — `requireNonEmptyText()` and `requireNonEmptyAttribute()` throw on null or blank values instead of silently returning empty strings
 - **UI-based cart waiting** — `addToCart()` clicks the button then waits for `a.content:has-text("N item")` to appear using Playwright auto-waiting — no polling, no hardcoded waits

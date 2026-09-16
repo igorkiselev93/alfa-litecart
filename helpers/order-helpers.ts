@@ -21,7 +21,7 @@ export async function addProductToCart(
   productName: string,
   quantity = 1,
 ): Promise<number> {
-  await productPage.gotoProduct(productPath);
+  await productPage.goto(productPath);
   await expect(productPage.productTitle).toContainText(productName);
   const unitPrice = await productPage.getRegularPriceValue();
   await productPage.selectSizeIfPresent();

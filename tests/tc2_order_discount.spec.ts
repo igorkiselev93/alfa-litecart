@@ -26,7 +26,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
     const salePrice = await allure.step(
       `Step 2: Open sale product page "${PRODUCT_NAME}" and verify discount`,
       async () => {
-        await productPage.gotoProduct(PRODUCT_PATH);
+        await productPage.goto(PRODUCT_PATH);
         await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
         expect(await productPage.isOnSale()).toBe(true);
 

@@ -1,10 +1,10 @@
 import { Page, Locator } from '@playwright/test';
-import { NavigablePage } from './NavigablePage';
+import { StaticPage } from './StaticPage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { SideMenuComponent } from './components/SideMenuComponent';
 import { LOCALE } from '../config/locale';
 
-export class HomePage extends NavigablePage {
+export class HomePage extends StaticPage {
   protected readonly url = `/${LOCALE}/`;
 
   readonly header: HeaderComponent;

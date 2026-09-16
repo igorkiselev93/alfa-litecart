@@ -1,12 +1,12 @@
 import { Page, Locator } from '@playwright/test';
-import { NavigablePage } from './NavigablePage';
+import { StaticPage } from './StaticPage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { OrderSuccessPage } from './OrderSuccessPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
 import { requireNonEmptyText } from '../utils/element-utils';
 import { LOCALE } from '../config/locale';
 
-export class CartPage extends NavigablePage {
+export class CartPage extends StaticPage {
   protected readonly url = `/${LOCALE}/checkout`;
 
   readonly header: HeaderComponent;

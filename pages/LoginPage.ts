@@ -1,9 +1,9 @@
 import { Page, Locator } from '@playwright/test';
-import { NavigablePage } from './NavigablePage';
+import { StaticPage } from './StaticPage';
 import { requireText } from '../utils/element-utils';
 import { LOCALE } from '../config/locale';
 
-export class LoginPage extends NavigablePage {
+export class LoginPage extends StaticPage {
   protected readonly url = `/${LOCALE}/login`;
 
   readonly emailInput: Locator;
