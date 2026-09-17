@@ -50,6 +50,8 @@ export async function addToCartAndOrder(
 
   await allure.step('Step 3: Navigate to cart and verify order total', async () => {
     await cartPage.goto();
+    // Verify exactly 1 product row in cart (single product type)
+    await expect(cartPage.getCartItemRows()).toHaveCount(1);
     const paymentDue = await cartPage.getPaymentDueValue();
     const expectedTotal = calcTotal(unitPrice, quantity);
     expect(paymentDue).toBe(expectedTotal);
