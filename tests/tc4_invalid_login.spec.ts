@@ -15,7 +15,7 @@ test.describe('TC-4: Invalid login (negative scenario)', () => {
     });
 
     await allure.step('Step 2: Enter valid email and wrong password', async () => {
-      await loginPage.login('igorkiselev93@gmail.com', 'WrongPassword999!');
+      await loginPage.login('test.user@example.com', 'WrongPassword123!');
     });
 
     await allure.step('Step 3: Verify error notice is visible', async () => {
