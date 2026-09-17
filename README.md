@@ -27,17 +27,17 @@ Automated E2E test suite for [litecart.stqa.ru](https://litecart.stqa.ru) built 
 │   ├── StaticPage.ts               # Base for pages with a fixed URL + goto()
 │   ├── DynamicPage.ts              # Base for pages with a parametric URL + goto(path)
 │   ├── TransientPage.ts            # Base for pages reached via redirect or action
-│   ├── HomePage.ts                 # sideMenu, header, recentlyViewed
+│   ├── HomePage.ts                 # header, sideMenu
 │   ├── LoginPage.ts
 │   ├── CartPage.ts                 # header
 │   ├── CreateAccountPage.ts
-│   ├── ProductPage.ts              # sideMenu, header
+│   ├── ProductPage.ts              # header
 │   ├── OrderSuccessPage.ts
 │   ├── OrderReceiptPage.ts
 │   └── components/
 │       ├── BaseComponent.ts        # Abstract base with root Locator isolation
-│       ├── HeaderComponent.ts      # Cart count, total, navigation (#header)
-│       └── SideMenuComponent.ts   # Login state, categories (aside#navigation)
+│       ├── HeaderComponent.ts      # Cart count, waitForCartCount (#header)
+│       └── SideMenuComponent.ts    # Login state, Recently Viewed (aside#navigation)
 ├── tests/
 │   ├── tc1_order_regular.spec.ts
 │   ├── tc2_order_discount.spec.ts
@@ -136,19 +136,19 @@ npm run format         # auto-fix formatting
 ```
 BasePage (abstract)               — getCurrentUrl, getTitle
   ├── StaticPage (abstract)       — abstract url, goto()       — fixed URL, navigate directly
-  │     ├── HomePage              — header, sideMenu, recentlyViewed
+  │     ├── HomePage              — header, sideMenu
   │     ├── LoginPage
   │     ├── CartPage              — header
   │     └── CreateAccountPage
   ├── DynamicPage (abstract)      — goto(path: string)         — parametric URL
-  │     └── ProductPage           — header, sideMenu; goto('/en/rubber-ducks-c-1/...')
+  │     └── ProductPage           — header; goto('/en/rubber-ducks-c-1/...')
   └── TransientPage (abstract)    — no url, no goto()          — reached via redirect only
         ├── OrderSuccessPage      — returned by CartPage.confirmOrder()
         └── OrderReceiptPage      — returned by OrderSuccessPage.openOrderReceipt()
 
 BaseComponent (abstract)          — root: Locator (scoped DOM area)
-  ├── HeaderComponent             — #header → cart count, total, openCart()
-  └── SideMenuComponent           — aside#navigation → isLoggedIn(), waitForLoginConfirmation()
+  ├── HeaderComponent             — #header → cart count, waitForCartCount()
+  └── SideMenuComponent           — aside#navigation → isLoggedIn(), recentlyViewed methods
 ```
 
 ### Which pages have which components
@@ -156,7 +156,7 @@ BaseComponent (abstract)          — root: Locator (scoped DOM area)
 | Page | `header` | `sideMenu` |
 |---|---|---|
 | HomePage | ✅ | ✅ |
-| ProductPage | ✅ | ✅ |
+| ProductPage | ✅ | ❌ |
 | CartPage | ✅ | ❌ |
 | LoginPage | ❌ | ❌ |
 | CreateAccountPage | ❌ | ❌ |
