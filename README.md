@@ -13,55 +13,6 @@ Automated E2E test suite for [litecart.stqa.ru](https://litecart.stqa.ru) built 
 | ESLint + eslint-plugin-playwright | 9.x / 2.x | Code quality |
 | Prettier | 3.x | Code formatting |
 
-## Project Structure
-
-```
-├── config/
-│   └── locale.ts                   # LOCALE env variable (URL prefix only)
-├── fixtures/
-│   └── page-fixtures.ts            # Playwright fixtures (pages + loggedInHomePage)
-├── helpers/
-│   └── order-helpers.ts            # Shared step helpers for order tests
-├── pages/                          # Page Object Model
-│   ├── BasePage.ts                 # Abstract base: getCurrentUrl, getTitle
-│   ├── StaticPage.ts               # Base for pages with a fixed URL + goto()
-│   ├── DynamicPage.ts              # Base for pages with a parametric URL + goto(path)
-│   ├── TransientPage.ts            # Base for pages reached via redirect or action
-│   ├── HomePage.ts                 # header, sideMenu
-│   ├── LoginPage.ts
-│   ├── CartPage.ts                 # header
-│   ├── CreateAccountPage.ts
-│   ├── ProductPage.ts              # header
-│   ├── OrderSuccessPage.ts
-│   ├── OrderReceiptPage.ts
-│   └── components/
-│       ├── BaseComponent.ts        # Abstract base with root Locator isolation
-│       ├── HeaderComponent.ts      # Cart count, waitForCartCount (#header)
-│       └── SideMenuComponent.ts    # Login state, Recently Viewed (aside#navigation)
-├── tests/
-│   ├── tc1_order_regular.spec.ts
-│   ├── tc2_order_discount.spec.ts
-│   ├── tc3_guest_order.spec.ts
-│   └── tc4_invalid_login.spec.ts
-├── utils/
-│   ├── price-utils.ts              # parseCurrencyAmount(), calcTotal(), sumPrices()
-│   └── element-utils.ts            # requireText() / requireNonEmptyText() — fail-fast helpers
-├── playwright.config.ts
-├── tsconfig.json
-└── eslint.config.js
-```
-
-## Test Cases
-
-| ID   | Scenario                            | Auth         | Parallel |
-|------|-------------------------------------|--------------|----------|
-| TC-1 | Order regular-price product (qty 3) | Fresh user   | ✅ Safe  |
-| TC-2 | Order discounted product (qty 2)    | Fresh user   | ✅ Safe  |
-| TC-3 | Guest checkout + Recently Viewed    | None (guest) | ✅ Safe  |
-| TC-4 | Invalid login — negative test       | None         | ✅ Safe  |
-
-TC-1 and TC-2 register a unique Faker user per run — isolated empty cart, safe for parallel execution.
-
 ## Prerequisites
 
 - Node.js 20+
@@ -72,7 +23,7 @@ TC-1 and TC-2 register a unique Faker user per run — isolated empty cart, safe
 
 ```bash
 git clone <repo-url>
-cd alfa-test
+cd alfa-litecard
 npm install
 ```
 
@@ -99,9 +50,6 @@ This suite targets the **English version** of litecart.stqa.ru only. All selecto
 The `LOCALE` environment variable controls only the **URL prefix** (e.g. `/en/`). It is useful if the server moves the English store to a different path, but it does not translate any assertions or test data.
 
 ```powershell
-# Default — English
-npm test
-
 # Different URL prefix (only if the target server serves English at that path)
 $env:LOCALE="us"; npm test
 ```
@@ -151,27 +99,11 @@ BaseComponent (abstract)          — root: Locator (scoped DOM area)
   └── SideMenuComponent           — aside#navigation → isLoggedIn(), recentlyViewed methods
 ```
 
-### Which pages have which components
-
-| Page | `header` | `sideMenu` |
-|---|---|---|
-| HomePage | ✅ | ✅ |
-| ProductPage | ✅ | ❌ |
-| CartPage | ✅ | ❌ |
-| LoginPage | ❌ | ❌ |
-| CreateAccountPage | ❌ | ❌ |
-| OrderSuccessPage | ❌ | ❌ |
-| OrderReceiptPage | ❌ | ❌ |
-
 ### Key Design Decisions
 
 - **Page Object Model** — locators and actions fully encapsulated; tests never access `page` directly
 - **Three-tier page hierarchy** — `StaticPage` (fixed URL), `DynamicPage` (parametric URL), `TransientPage` (no URL — redirect only)
 - **Component isolation** — `HeaderComponent` scoped to `#header`, `SideMenuComponent` scoped to `aside#navigation`; added only to pages where the element exists in DOM
-- **Fail-fast helpers** — `requireNonEmptyText()` and `requireNonEmptyAttribute()` throw on null or blank values instead of silently returning empty strings
-- **UI-based cart waiting** — `addToCart()` clicks the button then waits for `a.content:has-text("N item")` to appear using Playwright auto-waiting — no polling, no hardcoded waits
 - **Shared helpers** — `addToCartAndOrder()` and `addProductToCart()` in `helpers/order-helpers.ts` eliminate step duplication between TC-1, TC-2 and TC-3
-- **Currency-agnostic parsing** — `parseCurrencyAmount()` handles `$` and `€`, throws on unrecognised format
-- **Floating-point safe totals** — `calcTotal()` and `sumPrices()` round to 2 decimal places
 - **No `expect` in Page Objects** — enforced via ESLint `no-restricted-imports` rule
 - **Order receipt** — navigated to directly via extracted `href` to avoid Fancybox iframe and `window.print()` dialog
