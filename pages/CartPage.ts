@@ -52,6 +52,11 @@ export class CartPage extends StaticPage {
     return this.cartItemRows.filter({ hasText: productName })
   }
 
+  /** Returns the quantity input locator for a product — use with toHaveValue() for web-first assertion */
+  getQuantity(productName: string): Locator {
+    return this.getOrderSummaryRow(productName).locator('td').first();
+  }
+
   /** Returns true if the customer first name field is empty — indicates guest (not logged-in) checkout */
   async isFirstNameEmpty(): Promise<boolean> {
     const value = await this.customerFirstNameInput.inputValue();

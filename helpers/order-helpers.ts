@@ -52,6 +52,10 @@ export async function addToCartAndOrder(
     await cartPage.goto();
     // Verify exactly 1 product row in cart (single product type)
     await expect(cartPage.getCartItemRows()).toHaveCount(1);
+    // Verify product name is visible in cart
+    await expect(cartPage.getOrderSummaryRow(productName)).toBeVisible();
+    // Verify quantity matches expected
+    await expect(cartPage.getQuantity(productName)).toHaveText(String(quantity));
     const paymentDue = await cartPage.getPaymentDueValue();
     const expectedTotal = calcTotal(unitPrice, quantity);
     expect(paymentDue).toBe(expectedTotal);
