@@ -27,16 +27,6 @@ export class HeaderComponent extends BaseComponent {
     return parseInt(match[1], 10);
   }
 
-  async getCartTotal(): Promise<number> {
-    const text = await this.getCartText();
-    // Parse "Cart: 3 item(s) - $59.99" → 59.99
-    const match = text.match(/- [$€](\d+(?:\.\d+)?)/);
-    if (!match) {
-      throw new Error(`Failed to parse total price from cart text: "${text}"`);
-    }
-    return parseFloat(match[1]);
-  }
-
   async openCart(): Promise<void> {
     await this.cartLink.click();
   }

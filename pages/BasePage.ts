@@ -10,8 +10,4 @@ export abstract class BasePage {
   async getTitle(): Promise<string> {
     return this.page.title();
   }
-
-  protected async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('domcontentloaded');
-  }
 }
