@@ -40,6 +40,8 @@ test.describe('TC-3: Guest checkout', () => {
       await cartPage.goto();
       await expect(cartPage.getOrderSummaryRow(PRODUCT_1_NAME)).toBeVisible();
       await expect(cartPage.getOrderSummaryRow(PRODUCT_2_NAME)).toBeVisible();
+      // should be 2 products in the cart
+      await expect(cartPage.getCartItemRows()).toHaveCount(2);
       const total = await cartPage.getPaymentDueValue();
       // Expected total derived from actual product prices — not a hardcoded number
       expect(total).toBe(sumPrices(price1, price2));

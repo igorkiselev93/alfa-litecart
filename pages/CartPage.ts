@@ -10,7 +10,7 @@ export class CartPage extends StaticPage {
   protected readonly url = `/${LOCALE}/checkout`;
 
   readonly header: HeaderComponent;
-  readonly cartItems: Locator;
+  readonly cartItemRows: Locator;
   readonly confirmOrderButton: Locator;
   readonly paymentDueRow: Locator;
   readonly customerFirstNameInput: Locator;
@@ -18,7 +18,7 @@ export class CartPage extends StaticPage {
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
-    this.cartItems = page.locator('#box-checkout-cart ul li');
+    this.cartItemRows = page.locator('//td[contains(@class,"item")]/parent::tr');
     this.confirmOrderButton = page.locator('button[name="confirm_order"]');
     // XPath: payment due amount — scoped to footer row, last td strong
     this.paymentDueRow = page.locator('xpath=//tr[contains(@class,"footer")]//td[last()]//strong');
@@ -26,9 +26,9 @@ export class CartPage extends StaticPage {
     this.customerFirstNameInput = page.locator('input[name="firstname"]');
   }
 
-  /** Number of items in cart — only valid on checkout page */
-  async getCartItemCount(): Promise<number> {
-    return this.cartItems.count();
+  /** Locator for cart item rows — use with toHaveCount() for web-first assertion */
+  getCartItemRows(): Locator {
+    return this.cartItemRows;
   }
 
   async getPaymentDueText(): Promise<string> {
@@ -43,15 +43,13 @@ export class CartPage extends StaticPage {
   /** Confirms the order and returns OrderSuccessPage after redirect */
   async confirmOrder(): Promise<OrderSuccessPage> {
     await this.confirmOrderButton.click();
-    await this.page.waitForURL(/order_success/, { timeout: 15_000 });
+    await this.page.waitForURL(/order_success/);
     return new OrderSuccessPage(this.page);
   }
 
   /** Check if a product name appears in the order summary table */
   getOrderSummaryRow(productName: string): Locator {
-    return this.page.locator(
-      `xpath=//td[contains(text(),"${productName}")]`,
-    );
+    return this.cartItemRows.filter({ hasText: productName })
   }
 
   /** Returns true if the customer first name field is empty — indicates guest (not logged-in) checkout */
