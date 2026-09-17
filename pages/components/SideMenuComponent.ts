@@ -16,7 +16,7 @@ export class SideMenuComponent extends BaseComponent {
   }
 
   /** Waits until the logout link appears — confirms successful login/registration */
-  async waitForLoginConfirmation(timeout = 10_000): Promise<void> {
+  async waitForLoginConfirmation(timeout?: number): Promise<void> {
     await this.logoutLink.waitFor({ state: 'visible', timeout });
   }
 

@@ -24,6 +24,8 @@ export default defineConfig({
   ],
   use: {
     baseURL: 'https://litecart.stqa.ru',
+    actionTimeout: 10_000,
+    navigationTimeout: 10_000,
     // Record video for every test — visible in Allure report
     video: 'on',
     // Keep trace on first retry for debugging flaky tests

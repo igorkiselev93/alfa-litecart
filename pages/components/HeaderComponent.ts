@@ -50,7 +50,7 @@ export class HeaderComponent extends BaseComponent {
   }
 
   /** Waits until the cart header shows the expected item count */
-  async waitForCartCount(count: number, timeout = 10_000): Promise<void> {
+  async waitForCartCount(count: number, timeout?: number): Promise<void> {
     await this.cartLinkWithCount(count).waitFor({ state: 'visible', timeout });
   }
 }
