@@ -25,15 +25,13 @@ test.describe('TC-3: Guest checkout', () => {
     });
 
     // Step 1: Add first product to cart
-    const price1 = await allure.step(
-      `Step 1: Open "${PRODUCT_1_NAME}" and add to cart`,
-      () => addProductToCart(productPage, PRODUCT_1_PATH, PRODUCT_1_NAME),
+    const price1 = await allure.step(`Step 1: Open "${PRODUCT_1_NAME}" and add to cart`, () =>
+      addProductToCart(productPage, PRODUCT_1_PATH, PRODUCT_1_NAME),
     );
 
     // Step 2: Add second product to cart
-    const price2 = await allure.step(
-      `Step 2: Open "${PRODUCT_2_NAME}" and add to cart`,
-      () => addProductToCart(productPage, PRODUCT_2_PATH, PRODUCT_2_NAME),
+    const price2 = await allure.step(`Step 2: Open "${PRODUCT_2_NAME}" and add to cart`, () =>
+      addProductToCart(productPage, PRODUCT_2_PATH, PRODUCT_2_NAME),
     );
 
     await allure.step('Step 3: Verify both products in cart and order total', async () => {

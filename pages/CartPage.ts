@@ -49,7 +49,7 @@ export class CartPage extends StaticPage {
 
   /** Check if a product name appears in the order summary table */
   getOrderSummaryRow(productName: string): Locator {
-    return this.cartItemRows.filter({ hasText: productName })
+    return this.cartItemRows.filter({ hasText: productName });
   }
 
   /** Returns the quantity input locator for a product — use with toHaveValue() for web-first assertion */

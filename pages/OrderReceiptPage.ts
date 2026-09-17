@@ -33,13 +33,9 @@ export class OrderReceiptPage extends TransientPage {
   constructor(page: Page) {
     super(page);
     // XPath: order number div inside header table (e.g. 'Order #714')
-    this.orderNumberText = page.locator(
-      'xpath=//h1/following-sibling::div[1]',
-    );
+    this.orderNumberText = page.locator('xpath=//h1/following-sibling::div[1]');
     // Grand Total - last strong inside the totals table #
-    this.grandTotal = page.locator(
-      'xpath=//table[@id="order-total"]//tr[last()]//td[last()]',
-    );
+    this.grandTotal = page.locator('xpath=//table[@id="order-total"]//tr[last()]//td[last()]');
     // Items table has id="items" — skip first tr (header row) via :not(:first-child)
     this.orderItemRows = page.locator('table#items tbody tr:not(:first-child)');
   }

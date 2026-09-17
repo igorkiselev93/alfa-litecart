@@ -4,14 +4,14 @@ Automated E2E test suite for [litecart.stqa.ru](https://litecart.stqa.ru) built 
 
 ## Stack
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| [Playwright](https://playwright.dev) | 1.63 | Browser automation |
-| TypeScript | 5.7.3 (strict) | Type safety |
-| [Allure](https://allurereport.org) | 3.x | Test reporting |
-| [Faker.js](https://fakerjs.dev) | 9.x | Dynamic test data |
-| ESLint + eslint-plugin-playwright | 9.x / 2.x | Code quality |
-| Prettier | 3.x | Code formatting |
+| Tool                                 | Version        | Purpose            |
+| ------------------------------------ | -------------- | ------------------ |
+| [Playwright](https://playwright.dev) | 1.63           | Browser automation |
+| TypeScript                           | 5.7.3 (strict) | Type safety        |
+| [Allure](https://allurereport.org)   | 3.x            | Test reporting     |
+| [Faker.js](https://fakerjs.dev)      | 9.x            | Dynamic test data  |
+| ESLint + eslint-plugin-playwright    | 9.x / 2.x      | Code quality       |
+| Prettier                             | 3.x            | Code formatting    |
 
 ## Prerequisites
 
