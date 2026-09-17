@@ -34,11 +34,11 @@ export class OrderReceiptPage extends TransientPage {
     super(page);
     // XPath: order number div inside header table (e.g. 'Order #714')
     this.orderNumberText = page.locator(
-      'xpath=//header//td[last()]//div[contains(text(),"Order #")]',
+      'xpath=//h1/following-sibling::div[1]',
     );
-    // Grand Total strong inside the totals table
+    // Grand Total - last strong inside the totals table #
     this.grandTotal = page.locator(
-      'xpath=//td[.//strong[text()="Grand Total"]]/following-sibling::td//strong',
+      'xpath=//table[@id="order-total"]//tr[last()]//td[last()]',
     );
     // Items table has id="items" — skip first tr (header row) via :not(:first-child)
     this.orderItemRows = page.locator('table#items tbody tr:not(:first-child)');
