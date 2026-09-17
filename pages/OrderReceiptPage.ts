@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+﻿import { Page, Locator } from '@playwright/test';
 import { TransientPage } from './TransientPage';
 import { parseCurrencyAmount } from '../utils/price-utils';
 import { requireNonEmptyText } from '../utils/element-utils';
@@ -28,7 +28,7 @@ export class OrderReceiptPage extends TransientPage {
   readonly orderNumberText: Locator;
   readonly grandTotal: Locator;
   /** Data rows in the items table — skipping the header row (first tr in tbody) */
-  private readonly orderItemRows: Locator;
+  readonly orderItemRows: Locator;
 
   constructor(page: Page) {
     super(page);

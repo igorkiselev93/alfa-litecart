@@ -2,7 +2,7 @@
 import { BaseComponent } from './BaseComponent';
 
 export class HeaderComponent extends BaseComponent {
-  private readonly cartLink: Locator;
+  readonly cartLink: Locator;
 
   constructor(page: Page) {
     super(page, page.locator('#header'));

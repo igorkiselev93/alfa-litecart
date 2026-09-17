@@ -2,8 +2,8 @@ import { Page, Locator } from '@playwright/test';
 import { BaseComponent } from './BaseComponent';
 
 export class SideMenuComponent extends BaseComponent {
-  private readonly logoutLink: Locator;
-  private readonly recentlyViewedItems: Locator;
+  readonly logoutLink: Locator;
+  readonly recentlyViewedItems: Locator;
 
   constructor(page: Page) {
     super(page, page.locator('aside#navigation'));
