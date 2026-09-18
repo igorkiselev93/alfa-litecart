@@ -61,7 +61,6 @@ export async function addToCartAndOrder(
 
   const orderSuccessPage = await allure.step('Step 4: Confirm order', async () => {
     const success: OrderSuccessPage = await cartPage.confirmOrder();
-    expect(await success.isOrderConfirmed()).toBe(true);
     await expect(success.successHeading).toContainText('successfully completed', {
       ignoreCase: true,
     });

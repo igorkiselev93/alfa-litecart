@@ -19,14 +19,14 @@ test.describe('TC-1: Regular product order (authorized user)', () => {
 
     await allure.step('Precondition: Register new user, verify login and empty cart', async () => {
       await expect(loggedInHomePage.sideMenu.isLoggedIn()).toBeVisible();
-      expect(await loggedInHomePage.header.getCartItemCount()).toBe(0);
+      await expect(loggedInHomePage.header.cartLinkWithCount(0)).toBeVisible();
     });
 
     // Step 1: Navigate to product and get regular price
     const unitPrice = await allure.step(`Step 1: Open product page "${PRODUCT_NAME}"`, async () => {
       await productPage.goto(PRODUCT_PATH);
       await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
-      expect(await productPage.isOnSale()).toBe(false);
+      await expect(productPage.originalPriceStrikethrough).toBeHidden();
       const price = await productPage.getRegularPriceValue();
       expect(price).toBeGreaterThan(0);
       return price;

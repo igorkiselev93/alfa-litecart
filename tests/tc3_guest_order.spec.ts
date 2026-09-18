@@ -21,7 +21,7 @@ test.describe('TC-3: Guest checkout', () => {
 
     await allure.step('Precondition: Cart is empty', async () => {
       await homePage.goto();
-      expect(await homePage.header.getCartItemCount()).toBe(0);
+      await expect(homePage.header.cartLinkWithCount(0)).toBeVisible();
     });
 
     // Step 1: Add first product to cart
@@ -48,7 +48,7 @@ test.describe('TC-3: Guest checkout', () => {
     await allure.step(
       'Step 4: Verify first name field is empty (not pre-filled for guest)',
       async () => {
-        expect(await cartPage.isFirstNameEmpty()).toBe(true);
+        await expect(cartPage.customerFirstNameInput).toBeEmpty();
       },
     );
 

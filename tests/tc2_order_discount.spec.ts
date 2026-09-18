@@ -19,7 +19,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
 
     await allure.step('Precondition: Register new user, verify login and empty cart', async () => {
       await expect(loggedInHomePage.sideMenu.isLoggedIn()).toBeVisible();
-      expect(await cartPage.header.getCartItemCount()).toBe(0);
+      await expect(cartPage.header.cartLinkWithCount(0)).toBeVisible();
     });
 
     // Step 1: Navigate to sale product, verify discount and get sale price
@@ -28,7 +28,7 @@ test.describe('TC-2: Discounted product order (authorized user)', () => {
       async () => {
         await productPage.goto(PRODUCT_PATH);
         await expect(productPage.productTitle).toContainText(PRODUCT_NAME);
-        expect(await productPage.isOnSale()).toBe(true);
+        await expect(productPage.originalPriceStrikethrough).toBeVisible();
 
         const originalPrice = await productPage.getOriginalPriceValue();
         const price = await productPage.getSalePriceValue();
