@@ -1,0 +1,46 @@
+﻿import { Page, Locator } from '@playwright/test';
+import { BaseComponent } from './BaseComponent';
+
+export class HeaderComponent extends BaseComponent {
+  readonly cartLink: Locator;
+
+  constructor(page: Page) {
+    super(page, page.locator('#header'));
+    this.cartLink = this.root.locator('#cart a.content');
+  }
+
+  async getCartText(): Promise<string> {
+    const text = await this.cartLink.textContent();
+    if (text === null) {
+      throw new Error('Cart link element found but returned no text content.');
+    }
+    return text;
+  }
+
+  async getCartItemCount(): Promise<number> {
+    const text = await this.getCartText();
+    // Parse "Cart: 3 item(s) - $60" → 3
+    const match = text.match(/(\d+)\s+item/);
+    if (!match) {
+      throw new Error(`Failed to parse item count from cart text: "${text}"`);
+    }
+    return parseInt(match[1], 10);
+  }
+
+  async openCart(): Promise<void> {
+    await this.cartLink.click();
+  }
+
+  /**
+   * Matches the cart link when it contains exactly `count` items.
+   * Uses Playwright's built-in auto-waiting via waitFor({ state: 'visible' }).
+   */
+  cartLinkWithCount(count: number): Locator {
+    return this.root.locator(`a.content:has-text("${count} item")`);
+  }
+
+  /** Waits until the cart header shows the expected item count */
+  async waitForCartCount(count: number, timeout?: number): Promise<void> {
+    await this.cartLinkWithCount(count).waitFor({ state: 'visible', timeout });
+  }
+}

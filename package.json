@@ -1,0 +1,41 @@
+{
+  "name": "alfa-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:clean": "node -e \"require('fs').rmSync('allure-results', { recursive: true, force: true })\" && npx playwright test",
+    "report": "npx allure serve allure-results",
+    "report:generate": "npx allure generate allure-results --clean -o allure-report",
+    "report:open": "npx allure open allure-report",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@playwright/test": "^1.63.0",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "allure-commandline": "^2.43.0",
+    "allure-js-commons": "^3.12.1",
+    "allure-playwright": "^3.12.1",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.11.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "prettier": "^3.9.6",
+    "ts-node": "^10.9.2",
+    "typescript": "5.7.3",
+    "typescript-eslint": "^8.70.0"
+  }
+}
