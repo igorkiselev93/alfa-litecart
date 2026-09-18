@@ -24,7 +24,6 @@ export async function addProductToCart(
   await productPage.goto(productPath);
   await expect(productPage.productTitle).toContainText(productName);
   const unitPrice = await productPage.getRegularPriceValue();
-  await productPage.selectSizeIfPresent();
   await productPage.setQuantity(quantity);
   await productPage.addToCart(quantity);
   return unitPrice;
@@ -41,7 +40,6 @@ export async function addToCartAndOrder(
   quantity: number,
 ): Promise<OrderResult> {
   await allure.step(`Step 2: Set quantity to ${quantity} and add to cart`, async () => {
-    await productPage.selectSizeIfPresent();
     await productPage.setQuantity(quantity);
     await productPage.addToCart(quantity);
     const cartCount = await productPage.header.getCartItemCount();

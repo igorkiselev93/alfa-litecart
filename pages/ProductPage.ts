@@ -55,11 +55,9 @@ export class ProductPage extends DynamicPage {
     return parseCurrencyAmount(await this.getPriceText());
   }
 
-  /** Selects the given size option if the size dropdown is present on this product page */
-  async selectSizeIfPresent(size = 'Small'): Promise<void> {
-    if (await this.sizeSelect.isVisible()) {
-      await this.sizeSelect.selectOption({ value: size });
-    }
+  /** Selects the given size option for products that require it */
+  async selectSize(size: string): Promise<void> {
+    await this.sizeSelect.selectOption({ value: size });
   }
 
   async setQuantity(qty: number): Promise<void> {
