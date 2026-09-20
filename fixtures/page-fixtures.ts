@@ -1,10 +1,11 @@
 import { test as base } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-import { CreateAccountPage, UserData } from '../pages/CreateAccountPage';
+import { UserData } from '../types/user-data';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
+import { registerUserViaApi, applyAuthCookies } from '../helpers/auth-api';
 
 type MyFixtures = {
   loginPage: LoginPage;
@@ -28,11 +29,10 @@ export const test = base.extend<MyFixtures>({
     await use(new CartPage(page));
   },
 
-  // Registers + logs in a fresh isolated user.
-  // Needs for parallel runs.
-  loggedInHomePage: async ({ page }, use) => {
-    const createAccountPage = new CreateAccountPage(page);
-
+  // Registers a fresh isolated user via API (faster than UI).
+  // Then navigates to HomePage with authenticated session.
+  // Needed for parallel runs.
+  loggedInHomePage: async ({ page, context, baseURL }, use) => {
     const user: UserData = {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
@@ -46,11 +46,17 @@ export const test = base.extend<MyFixtures>({
       password: `Pass_${faker.string.alphanumeric(8)}1!`,
     };
 
-    await createAccountPage.goto();
-    await createAccountPage.registerUser(user);
+    // Register user via API (skips slow UI interactions)
+    const authResult = await registerUserViaApi(user, baseURL!);
 
-    // It redirects to HomePage after registration
+    // Apply session cookies to browser context
+    await applyAuthCookies(context, authResult);
+
+    // Navigate to HomePage - user is already logged in
     const homePage = new HomePage(page);
+    await homePage.goto();
+
+    // Verify user is logged in
     await homePage.sideMenu.waitForLoginConfirmation();
 
     await use(homePage);
