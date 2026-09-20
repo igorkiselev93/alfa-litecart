@@ -27,7 +27,9 @@ function extractCsrfToken(html: string): string {
  * Extracts session cookies from an API context and returns them
  * in a format suitable for {@link applyAuthCookies}.
  */
-async function extractSessionCookies(apiContext: APIRequestContext): Promise<AuthApiResult> {
+async function extractSessionCookies(
+  apiContext: APIRequestContext
+): Promise<AuthApiResult> {
   const { cookies } = await apiContext.storageState();
   return {
     cookies: cookies.map((c) => ({
@@ -46,7 +48,10 @@ async function extractSessionCookies(apiContext: APIRequestContext): Promise<Aut
  * @param user - user data for registration
  * @param baseURL - application base URL (defaults to playwright config `use.baseURL`)
  */
-export async function registerUserViaApi(user: UserData, baseURL: string): Promise<AuthApiResult> {
+export async function registerUserViaApi(
+  user: UserData,
+  baseURL: string
+): Promise<AuthApiResult> {
   const apiContext = await request.newContext({ baseURL });
 
   try {
@@ -70,8 +75,8 @@ export async function registerUserViaApi(user: UserData, baseURL: string): Promi
       address2: '',
       postcode: user.postcode,
       city: user.city,
-      country_code: getCountryCode(user.country),
-      zone_code: user.zone ? getZoneCode(user.zone) : '',
+      country_code: user.country,
+      zone_code: user.zone || '',
       email: user.email,
       phone: user.phone,
       newsletter: '1',
@@ -102,36 +107,8 @@ export async function registerUserViaApi(user: UserData, baseURL: string): Promi
  */
 export async function applyAuthCookies(
   browserContext: BrowserContext,
-  authResult: AuthApiResult,
+  authResult: AuthApiResult
 ): Promise<void> {
   await browserContext.addCookies(authResult.cookies);
 }
 
-/**
- * Maps country name to ISO country code.
- * Add entries here when tests need additional countries.
- */
-function getCountryCode(country: string): string {
-  const countryMap: Record<string, string> = {
-    'United States': 'US',
-    'United Kingdom': 'GB',
-    Canada: 'CA',
-    Germany: 'DE',
-    France: 'FR',
-  };
-  return countryMap[country] || country;
-}
-
-/**
- * Maps US state name to zone code.
- * Only states actually used in test data are listed — add more as needed.
- */
-function getZoneCode(zone: string): string {
-  const zoneMap: Record<string, string> = {
-    California: 'CA',
-    Florida: 'FL',
-    'New York': 'NY',
-    Texas: 'TX',
-  };
-  return zoneMap[zone] || zone;
-}
